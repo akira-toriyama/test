@@ -7,11 +7,20 @@ type GitmojiStruct = {
   semver: null | "patch" | "minor" | "major";
 };
 
-const gitmojisPath =
-  "https://raw.githubusercontent.com/carloscuesta/gitmoji/master/src/data/gitmojis.json";
+type FetchGitmojis = () => Promise<
+  never[] | {
+    name: string;
+    value: string;
+  }[]
+>;
 
-export const fetchGitmojis = () =>
-  fetch(gitmojisPath)
+/**
+ * @see https://raw.githubusercontent.com/carloscuesta/gitmoji/master/src/data/gitmojis.json
+ */
+export const fetchGitmojis: FetchGitmojis = () =>
+  fetch(
+    "https://raw.githubusercontent.com/carloscuesta/gitmoji/master/src/data/gitmojis.json",
+  )
     .then<{ gitmojis: GitmojiStruct[] }>((v) =>
       v.ok ? v.json() : { gitmojis: [] }
     )
@@ -19,7 +28,7 @@ export const fetchGitmojis = () =>
       v.gitmojis.map((vv) => ({
         name: `${vv.emoji}: ${vv.description}`,
         value: vv.code,
-      } as const))
+      }))
     )
     .catch((e) => {
       console.error(e);

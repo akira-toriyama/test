@@ -1,10 +1,11 @@
-// TODO envは引数から
-import * as translator from "./translator.ts";
-
-const makeUrl = (p: { txt: string }) =>
-  `https://api.textgears.com/grammar?key=${
-    Deno.env.get("GRAMMAR_API_KEY")
-  }&text=${encodeURI(p.txt)}`;
+type MakeUrl = (p: {
+  txt: string;
+  grammarAuthKey: string;
+}) => string;
+const makeUrl: MakeUrl = (p) =>
+  `https://api.textgears.com/grammar?key=${p.grammarAuthKey}&text=${
+    encodeURI(p.txt)
+  }`;
 
 type GrammarCheckResponse = null | {
   status: boolean;
@@ -25,17 +26,32 @@ type GrammarCheckResponse = null | {
     >;
   };
 };
+type GrammarCheck = (p: {
+  txt: string;
+  grammarAuthKey: string;
+}) => Promise<
+  void | {
+    description: {
+      en: string;
+    };
+    bad: string;
+    better: string[];
+  }[]
+>;
 
 /**
  * @see https://textgears.com/api#grammar
  */
-export const grammarCheck = (p: { txt: string }) =>
+export const grammarCheck: GrammarCheck = (p) =>
   fetch(makeUrl(p))
     .then<GrammarCheckResponse>((v) => v.ok ? v.json() : null)
-    .then(async (v) => {
-      const allowTexts = p.txt.match(/`(.*?)`/g) || [];
+    .then((v) => {
+      if (v === null) {
+        return [];
+      }
 
-      const errors = v?.response.errors
+      const allowTexts = p.txt.match(/`(.*?)`/g) || [];
+      return v.response.errors
         .map((vv) => ({
           description: {
             en: vv.description.en,
@@ -44,21 +60,5 @@ export const grammarCheck = (p: { txt: string }) =>
           better: vv.better,
         }))
         .filter((o) => !allowTexts.some((txt) => txt === `\`${o.bad}\``)) || [];
-
-      const translatedTxt = await Promise.all(
-        errors.map((e) =>
-          translator.translate({
-            txt: e.description.en,
-          })
-        ),
-      );
-
-      return errors.map((e, i) => ({
-        ...e,
-        description: {
-          ...e.description,
-          [Deno.env.get("DEEPL_TARGET_LANG")]: translatedTxt.at(i),
-        },
-      }));
     })
     .catch(console.error);
