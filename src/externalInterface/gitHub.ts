@@ -14,6 +14,11 @@ const denoRun = async (pa: { cmd: Array<string> }) => {
 
 type Issues = Array<{ body: string; number: number; title: string }>;
 
+/**
+ * - piyo
+ * - fuga
+ * - poyo
+ */
 export const fetchIssues = () =>
   denoRun({
     cmd: ["gh", "issue", "list", "--assignee=@me", "--json=number,title,body"],
