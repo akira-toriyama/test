@@ -6,7 +6,9 @@ import {
 
 import * as gitmoji from "../externalInterface/gitmoji.ts";
 import * as grammar from "../externalInterface/grammar.ts";
-import * as gitHub from "../externalInterface/gitHub.ts";
+// import * as gitHub from "../externalInterface/gitHub.ts";
+import * as gitHub from "https://github.com/akira-toriyama/test/blob/main/src/externalInterface/gitHub.ts";
+
 import * as zzz from "../userInterface/x.ts";
 import * as git from "../externalInterface/git.ts";
 
