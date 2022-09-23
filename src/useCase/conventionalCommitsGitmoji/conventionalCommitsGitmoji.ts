@@ -12,7 +12,7 @@ import * as git from "../../externalInterface/git.ts";
 import * as terminal from "../../userInterface/terminal.ts";
 import * as util from "./util.ts";
 
-const Initialize = async () => {
+const initialize = async () => {
   const [gitmojis, issues] = await Promise.all([
     gitmoji.fetchGitmojis(),
     gitHub.fetchIssues(),
@@ -34,7 +34,7 @@ const Initialize = async () => {
 };
 
 const main = async (p: { template: string }) => {
-  const { gitmojis, issues, state } = await Initialize();
+  const { gitmojis, issues, state } = await initialize();
   state.value = p.template;
 
   return prompt([
@@ -213,10 +213,10 @@ const main = async (p: { template: string }) => {
   });
 };
 
-const template = `{{type}}: {{gitmoji}} {{subject}} Close #{{issue}}
+export const run = () => {
+  const template = `{{type}}: {{gitmoji}} {{subject}} Close #{{issue}}
 
 {{body}}`;
 
-export const run = () => {
   main({ template }).then((v) => git.setCommitMessage({ message: v }));
 };
