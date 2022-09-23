@@ -37,7 +37,7 @@ const main = async (p: { template: string }) => {
   const { gitmojis, issues, state } = await Initialize();
   state.value = p.template;
 
-  await prompt([
+  return prompt([
     {
       name: "type",
       message: "Select a type.",
@@ -205,9 +205,12 @@ const main = async (p: { template: string }) => {
         await next();
       },
     },
-  ]);
-
-  return state.value;
+  ]).then(() => {
+    return state.value;
+  }).catch((e) => {
+    console.error(e);
+    return "";
+  });
 };
 
 const template = `{{type}}: {{gitmoji}} {{subject}} Close #{{issue}}
