@@ -19,15 +19,7 @@ const initialize = async () => {
   ]);
 
   class State {
-    constructor(private _v: string) {}
-
-    get value() {
-      return this._v;
-    }
-
-    set value(p: string) {
-      this._v = p;
-    }
+    constructor(public value: string) {}
   }
 
   return { gitmojis, issues, state: new State("") };
@@ -77,13 +69,12 @@ const main = async (p: { template: string }) => {
           keyValue,
         });
 
-        // TODO name を自動で取得
-        const r = templateService.cleanTemplate({
-          template: state.value,
-          name: "gitmoji",
+        terminal.render({
+          value: templateService.cleanTemplate({
+            template: state.value,
+            name: "gitmoji",
+          }),
         });
-
-        terminal.render({ value: r });
 
         await next();
       },
@@ -133,13 +124,12 @@ const main = async (p: { template: string }) => {
           keyValue,
         });
 
-        // TODO name を自動で取得
-        const r = templateService.cleanTemplate({
-          template: state.value,
-          name: "subject",
+        terminal.render({
+          value: templateService.cleanTemplate({
+            template: state.value,
+            name: "subject",
+          }),
         });
-
-        terminal.render({ value: r });
 
         await next();
       },
@@ -148,22 +138,19 @@ const main = async (p: { template: string }) => {
       name: "issue",
       message: "Select a issue.",
       type: Select,
-      options: [{ name: "_", value: "_" }, ...issues],
+      options: [{ name: "Not selected", value: "_" }, ...issues],
       search: true,
       before: async (keyValue, next) => {
         state.value = templateService.fillInTemplate({
           template: state.value,
           keyValue,
         });
-
-        // TODO name を自動で取得
-        const r = templateService.cleanTemplate({
-          template: state.value,
-          name: "issue",
+        terminal.render({
+          value: templateService.cleanTemplate({
+            template: state.value,
+            name: "issue",
+          }),
         });
-
-        terminal.render({ value: r });
-
         await next();
       },
       after: async (keyValue, next) => {
@@ -184,14 +171,17 @@ const main = async (p: { template: string }) => {
       message: "Enter body.",
       type: Input,
       before: async (keyValue, next) => {
-        const n = templateService.fillInTemplate({
+        state.value = templateService.fillInTemplate({
           template: state.value,
           keyValue,
         });
 
-        // TODO name を自動で取得
-        const r = templateService.cleanTemplate({ template: n, name: "body" });
-        terminal.render({ value: r });
+        terminal.render({
+          value: templateService.cleanTemplate({
+            template: state.value,
+            name: "body",
+          }),
+        });
         await next();
       },
       after: async (keyValue, next) => {
@@ -205,9 +195,7 @@ const main = async (p: { template: string }) => {
         await next();
       },
     },
-  ]).then(() => {
-    return state.value;
-  }).catch((e) => {
+  ]).then(() => state.value).catch((e) => {
     console.error(e);
     return "";
   });
