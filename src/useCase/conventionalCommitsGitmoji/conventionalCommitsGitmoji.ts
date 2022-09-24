@@ -189,7 +189,6 @@ const main = async (p: { template: string }) => {
       after: async (_, next) => {
         state.template = state.template.replace(/{{body}}/, "")
           .trim().trim();
-
         await next();
       },
     },
