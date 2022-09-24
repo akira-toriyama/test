@@ -119,7 +119,7 @@ const main = async (p: { template: string }) => {
             return "";
           });
       },
-      after: async (keyValue, next) => {
+      before: async (keyValue, next) => {
         state.template = templateService.fillInTemplate({
           template: state.template,
           keyValue,
@@ -141,15 +141,12 @@ const main = async (p: { template: string }) => {
       type: Select,
       options: [{ name: "Not selected", value: "_" }, ...issues],
       search: true,
-      after: async (keyValue, next) => {
+
+      before: async (keyValue, next) => {
         state.template = templateService.fillInTemplate({
           template: state.template,
           keyValue,
-        })
-          .replace(
-            / Close #_\r?\n/,
-            "\n",
-          ).trim();
+        });
 
         terminal.render({
           value: templateService.cleanTemplate({
@@ -157,6 +154,16 @@ const main = async (p: { template: string }) => {
             name: "issue",
           }),
         });
+
+        await next();
+      },
+
+      after: async (_, next) => {
+        state.template = state.template.replace(
+          / Close #{{issue}}\r?\n/,
+          "\n",
+        ).trim();
+
         await next();
       },
     },
@@ -179,18 +186,10 @@ const main = async (p: { template: string }) => {
 
         await next();
       },
-      after: async (keyValue, next) => {
-        state.template = templateService.fillInTemplate({
-          template: state.template,
-          keyValue,
-        }).trim().trim();
+      after: async (_, next) => {
+        state.template = state.template.replace(/{{body}}/, "")
+          .trim().trim();
 
-        terminal.render({
-          value: templateService.cleanTemplate({
-            template: state.template,
-            name: "issue",
-          }),
-        });
         await next();
       },
     },
