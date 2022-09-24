@@ -185,7 +185,7 @@ const main = async (p: { template: string }) => {
 
         // カスタム
         state.template = state.template.replace(
-          / Close #{{issue}}/,
+          / Close #_/,
           "",
         ).trim();
 
@@ -214,6 +214,7 @@ const main = async (p: { template: string }) => {
           template: state.template,
           answerVo,
         });
+
         // カスタム
         state.template = state.template.trim().trim();
         await next();
