@@ -42,10 +42,10 @@ const main = async (p: { template: string }) => {
         { name: "oxx: Major", value: "oxx" },
       ],
       search: true,
-      before: async (keyValue, next) => {
+      before: async (answerVo, next) => {
         state.template = templateService.fillInTemplate({
           template: state.template,
-          keyValue,
+          answerVo,
         });
 
         terminal.render({
@@ -64,10 +64,10 @@ const main = async (p: { template: string }) => {
       type: Select,
       options: gitmojis,
       search: true,
-      before: async (keyValue, next) => {
+      before: async (answerVo, next) => {
         state.template = templateService.fillInTemplate({
           template: state.template,
-          keyValue,
+          answerVo,
         });
 
         terminal.render({
@@ -119,10 +119,10 @@ const main = async (p: { template: string }) => {
             return "";
           });
       },
-      before: async (keyValue, next) => {
+      before: async (answerVo, next) => {
         state.template = templateService.fillInTemplate({
           template: state.template,
-          keyValue,
+          answerVo,
         });
 
         terminal.render({
@@ -142,10 +142,10 @@ const main = async (p: { template: string }) => {
       options: [{ name: "Not selected", value: "_" }, ...issues],
       search: true,
 
-      before: async (keyValue, next) => {
+      before: async (answerVo, next) => {
         state.template = templateService.fillInTemplate({
           template: state.template,
-          keyValue,
+          answerVo,
         });
 
         terminal.render({
@@ -171,10 +171,10 @@ const main = async (p: { template: string }) => {
       name: "body",
       message: "Enter body.",
       type: Input,
-      before: async (keyValue, next) => {
+      before: async (answerVo, next) => {
         state.template = templateService.fillInTemplate({
           template: state.template,
-          keyValue,
+          answerVo,
         });
 
         terminal.render({
@@ -193,7 +193,13 @@ const main = async (p: { template: string }) => {
       },
     },
   ])
-    .then(() => state.template)
+    .then((answerVo) => {
+      state.template = templateService.fillInTemplate({
+        template: state.template,
+        answerVo: answerVo,
+      });
+      return state.template;
+    })
     .catch((e) => {
       console.error(e);
       return "";

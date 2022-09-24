@@ -17,10 +17,10 @@ export const cleanTemplate: CleanTemplate = (p) =>
 
 type FillInTemplate = (p: {
   template: string;
-  keyValue: Record<string, string | undefined>;
+  answerVo: Record<string, string | undefined>;
 }) => string;
 export const fillInTemplate: FillInTemplate = (p) => {
-  const kv = Object.entries(p.keyValue);
+  const kv = Object.entries(p.answerVo);
 
   const v = kv.shift();
   if (v === undefined) {
@@ -29,6 +29,6 @@ export const fillInTemplate: FillInTemplate = (p) => {
 
   return fillInTemplate({
     template: p.template.replace(`{{${v[0]}}}`, v[1] || ""),
-    keyValue: Object.fromEntries(kv),
+    answerVo: Object.fromEntries(kv),
   });
 };
