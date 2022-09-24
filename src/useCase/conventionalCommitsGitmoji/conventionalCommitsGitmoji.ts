@@ -12,7 +12,7 @@ import * as git from "../../externalInterface/git.ts";
 import * as terminal from "../../userInterface/terminal.ts";
 import * as util from "./util.ts";
 
-const initialize = async () => {
+const initialize = async (p: { template: string }) => {
   const [gitmojis, issues] = await Promise.all([
     gitmoji.fetchGitmojis(),
     gitHub.fetchIssues(),
@@ -22,12 +22,22 @@ const initialize = async () => {
     constructor(public value: string) {}
   }
 
-  return { gitmojis, issues, state: new State("") };
+  const state = new State(p.template);
+
+  terminal.render({
+    value: templateService.cleanTemplate({
+      template: state.value,
+      name: "type",
+    }),
+  });
+
+  return { gitmojis, issues, state };
 };
 
 const main = async (p: { template: string }) => {
-  const { gitmojis, issues, state } = await initialize();
-  state.value = p.template;
+  const { gitmojis, issues, state } = await initialize({
+    template: p.template,
+  });
 
   return prompt([
     {
@@ -41,7 +51,7 @@ const main = async (p: { template: string }) => {
         { name: "oxx: Major", value: "oxx" },
       ],
       search: true,
-      before: async (keyValue, next) => {
+      after: async (keyValue, next) => {
         state.value = templateService.fillInTemplate({
           template: state.value,
           keyValue,
@@ -63,7 +73,7 @@ const main = async (p: { template: string }) => {
       type: Select,
       options: gitmojis,
       search: true,
-      before: async (keyValue, next) => {
+      after: async (keyValue, next) => {
         state.value = templateService.fillInTemplate({
           template: state.value,
           keyValue,
@@ -92,7 +102,7 @@ const main = async (p: { template: string }) => {
 
         return grammar.grammarCheck({
           txt: input,
-          grammarAuthKey: Deno.env.get("GRAMMAR_API_KEY") || "",
+          grammarAuthKey: Deno.env.get("GRAMMAR_API_KEY"),
         })
           .then(async (v) => {
             if (!v) {
@@ -112,13 +122,13 @@ const main = async (p: { template: string }) => {
             if (util.subject.isValid(r)) {
               return true;
             }
-            // TODO 調整
+            console.clear();
             console.error(util.subject.fmt(r));
             // error
             return "";
           });
       },
-      before: async (keyValue, next) => {
+      after: async (keyValue, next) => {
         state.value = templateService.fillInTemplate({
           template: state.value,
           keyValue,
@@ -140,19 +150,19 @@ const main = async (p: { template: string }) => {
       type: Select,
       options: [{ name: "Not selected", value: "_" }, ...issues],
       search: true,
-      before: async (keyValue, next) => {
-        state.value = templateService.fillInTemplate({
-          template: state.value,
-          keyValue,
-        });
-        terminal.render({
-          value: templateService.cleanTemplate({
-            template: state.value,
-            name: "issue",
-          }),
-        });
-        await next();
-      },
+      // after: async (keyValue, next) => {
+      //   state.value = templateService.fillInTemplate({
+      //     template: state.value,
+      //     keyValue,
+      //   });
+      //   terminal.render({
+      //     value: templateService.cleanTemplate({
+      //       template: state.value,
+      //       name: "issue",
+      //     }),
+      //   });
+      //   await next();
+      // },
       after: async (keyValue, next) => {
         state.value = templateService.fillInTemplate({
           template: state.value,
@@ -163,6 +173,12 @@ const main = async (p: { template: string }) => {
             "\n",
           ).trim();
 
+        terminal.render({
+          value: templateService.cleanTemplate({
+            template: state.value,
+            name: "issue",
+          }),
+        });
         await next();
       },
     },
@@ -170,20 +186,20 @@ const main = async (p: { template: string }) => {
       name: "body",
       message: "Enter body.",
       type: Input,
-      before: async (keyValue, next) => {
-        state.value = templateService.fillInTemplate({
-          template: state.value,
-          keyValue,
-        });
+      // after: async (keyValue, next) => {
+      //   state.value = templateService.fillInTemplate({
+      //     template: state.value,
+      //     keyValue,
+      //   });
 
-        terminal.render({
-          value: templateService.cleanTemplate({
-            template: state.value,
-            name: "body",
-          }),
-        });
-        await next();
-      },
+      //   terminal.render({
+      //     value: templateService.cleanTemplate({
+      //       template: state.value,
+      //       name: "body",
+      //     }),
+      //   });
+      //   await next();
+      // },
       after: async (keyValue, next) => {
         state.value = templateService.fillInTemplate({
           template: state.value,
@@ -192,13 +208,21 @@ const main = async (p: { template: string }) => {
           .trim()
           .trim();
 
+        terminal.render({
+          value: templateService.cleanTemplate({
+            template: state.value,
+            name: "issue",
+          }),
+        });
         await next();
       },
     },
-  ]).then(() => state.value).catch((e) => {
-    console.error(e);
-    return "";
-  });
+  ])
+    .then(() => state.value)
+    .catch((e) => {
+      console.error(e);
+      return "";
+    });
 };
 
 export const run = () => {
@@ -206,5 +230,7 @@ export const run = () => {
 
 {{body}}`;
 
-  main({ template }).then((v) => git.setCommitMessage({ message: v }));
+  main({ template })
+    .then((v) => git.setCommitMessage({ message: v }))
+    .catch(console.error);
 };
