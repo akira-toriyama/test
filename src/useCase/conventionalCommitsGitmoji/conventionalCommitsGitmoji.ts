@@ -186,20 +186,27 @@ const main = async (p: { template: string }) => {
 
         await next();
       },
-      after: async (_, next) => {
-        state.template = state.template.replace(/{{body}}/, "")
-          .trim().trim();
+      after: async (answerVo, next) => {
+        state.template = templateService.fillInTemplate({
+          template: state.template,
+          answerVo,
+        });
+
+        // カスタム
+        state.template = state.template.trim().trim();
+
+        terminal.render({
+          value: templateService.cleanTemplate({
+            template: state.template,
+            name: "body",
+          }),
+        });
+
         await next();
       },
     },
   ])
-    .then((answerVo) => {
-      state.template = templateService.fillInTemplate({
-        template: state.template,
-        answerVo: answerVo,
-      });
-      return state.template;
-    })
+    .then(() => state.template)
     .catch((e) => {
       console.error(e);
       return "";
