@@ -19,14 +19,14 @@ const initialize = async (p: { template: string }) => {
   ]);
 
   class State {
-    constructor(public value: string) {}
+    constructor(public template: string) {}
   }
 
   const state = new State(p.template);
 
   terminal.render({
     value: templateService.cleanTemplate({
-      template: state.value,
+      template: state.template,
       name: "type",
     }),
   });
@@ -52,14 +52,14 @@ const main = async (p: { template: string }) => {
       ],
       search: true,
       after: async (keyValue, next) => {
-        state.value = templateService.fillInTemplate({
-          template: state.value,
+        state.template = templateService.fillInTemplate({
+          template: state.template,
           keyValue,
         });
 
         terminal.render({
           value: templateService.cleanTemplate({
-            template: state.value,
+            template: state.template,
             name: "type",
           }),
         });
@@ -74,14 +74,14 @@ const main = async (p: { template: string }) => {
       options: gitmojis,
       search: true,
       after: async (keyValue, next) => {
-        state.value = templateService.fillInTemplate({
-          template: state.value,
+        state.template = templateService.fillInTemplate({
+          template: state.template,
           keyValue,
         });
 
         terminal.render({
           value: templateService.cleanTemplate({
-            template: state.value,
+            template: state.template,
             name: "gitmoji",
           }),
         });
@@ -129,14 +129,14 @@ const main = async (p: { template: string }) => {
           });
       },
       after: async (keyValue, next) => {
-        state.value = templateService.fillInTemplate({
-          template: state.value,
+        state.template = templateService.fillInTemplate({
+          template: state.template,
           keyValue,
         });
 
         terminal.render({
           value: templateService.cleanTemplate({
-            template: state.value,
+            template: state.template,
             name: "subject",
           }),
         });
@@ -150,22 +150,9 @@ const main = async (p: { template: string }) => {
       type: Select,
       options: [{ name: "Not selected", value: "_" }, ...issues],
       search: true,
-      // after: async (keyValue, next) => {
-      //   state.value = templateService.fillInTemplate({
-      //     template: state.value,
-      //     keyValue,
-      //   });
-      //   terminal.render({
-      //     value: templateService.cleanTemplate({
-      //       template: state.value,
-      //       name: "issue",
-      //     }),
-      //   });
-      //   await next();
-      // },
       after: async (keyValue, next) => {
-        state.value = templateService.fillInTemplate({
-          template: state.value,
+        state.template = templateService.fillInTemplate({
+          template: state.template,
           keyValue,
         })
           .replace(
@@ -175,7 +162,7 @@ const main = async (p: { template: string }) => {
 
         terminal.render({
           value: templateService.cleanTemplate({
-            template: state.value,
+            template: state.template,
             name: "issue",
           }),
         });
@@ -186,31 +173,15 @@ const main = async (p: { template: string }) => {
       name: "body",
       message: "Enter body.",
       type: Input,
-      // after: async (keyValue, next) => {
-      //   state.value = templateService.fillInTemplate({
-      //     template: state.value,
-      //     keyValue,
-      //   });
-
-      //   terminal.render({
-      //     value: templateService.cleanTemplate({
-      //       template: state.value,
-      //       name: "body",
-      //     }),
-      //   });
-      //   await next();
-      // },
       after: async (keyValue, next) => {
-        state.value = templateService.fillInTemplate({
-          template: state.value,
+        state.template = templateService.fillInTemplate({
+          template: state.template,
           keyValue,
-        })
-          .trim()
-          .trim();
+        }).trim().trim();
 
         terminal.render({
           value: templateService.cleanTemplate({
-            template: state.value,
+            template: state.template,
             name: "issue",
           }),
         });
@@ -218,7 +189,7 @@ const main = async (p: { template: string }) => {
       },
     },
   ])
-    .then(() => state.value)
+    .then(() => state.template)
     .catch((e) => {
       console.error(e);
       return "";
