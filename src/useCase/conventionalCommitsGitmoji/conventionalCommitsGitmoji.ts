@@ -57,6 +57,13 @@ const main = async (p: { template: string }) => {
 
         await next();
       },
+      after: async (answerVo, next) => {
+        state.template = templateService.fillInTemplate({
+          template: state.template,
+          answerVo,
+        });
+        await next();
+      },
     },
     {
       name: "gitmoji",
@@ -77,6 +84,13 @@ const main = async (p: { template: string }) => {
           }),
         });
 
+        await next();
+      },
+      after: async (answerVo, next) => {
+        state.template = templateService.fillInTemplate({
+          template: state.template,
+          answerVo,
+        });
         await next();
       },
     },
@@ -134,6 +148,13 @@ const main = async (p: { template: string }) => {
 
         await next();
       },
+      after: async (answerVo, next) => {
+        state.template = templateService.fillInTemplate({
+          template: state.template,
+          answerVo,
+        });
+        await next();
+      },
     },
     {
       name: "issue",
@@ -141,7 +162,6 @@ const main = async (p: { template: string }) => {
       type: Select,
       options: [{ name: "Not selected", value: "_" }, ...issues],
       search: true,
-
       before: async (answerVo, next) => {
         state.template = templateService.fillInTemplate({
           template: state.template,
@@ -157,11 +177,16 @@ const main = async (p: { template: string }) => {
 
         await next();
       },
+      after: async (answerVo, next) => {
+        state.template = templateService.fillInTemplate({
+          template: state.template,
+          answerVo,
+        });
 
-      after: async (_, next) => {
+        // カスタム
         state.template = state.template.replace(
-          / Close #{{issue}}\r?\n/,
-          "\n",
+          / Close #{{issue}}/,
+          "",
         ).trim();
 
         await next();
@@ -176,14 +201,12 @@ const main = async (p: { template: string }) => {
           template: state.template,
           answerVo,
         });
-
         terminal.render({
           value: templateService.cleanTemplate({
             template: state.template,
             name: "body",
           }),
         });
-
         await next();
       },
       after: async (answerVo, next) => {
@@ -191,17 +214,8 @@ const main = async (p: { template: string }) => {
           template: state.template,
           answerVo,
         });
-
         // カスタム
         state.template = state.template.trim().trim();
-
-        terminal.render({
-          value: templateService.cleanTemplate({
-            template: state.template,
-            name: "body",
-          }),
-        });
-
         await next();
       },
     },
