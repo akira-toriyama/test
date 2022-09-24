@@ -11,26 +11,17 @@ import * as templateService from "../../service/template.ts";
 import * as git from "../../externalInterface/git.ts";
 import * as terminal from "../../userInterface/terminal.ts";
 import * as util from "./util.ts";
+import { cursorNextLine } from "https://deno.land/x/cliffy@v0.25.0/ansi/ansi_escapes.ts";
 
 const initialize = async (p: { template: string }) => {
   const [gitmojis, issues] = await Promise.all([
     gitmoji.fetchGitmojis(),
     gitHub.fetchIssues(),
   ]);
-
   class State {
     constructor(public template: string) {}
   }
-
   const state = new State(p.template);
-
-  terminal.render({
-    value: templateService.cleanTemplate({
-      template: state.template,
-      name: "type",
-    }),
-  });
-
   return { gitmojis, issues, state };
 };
 
@@ -51,7 +42,7 @@ const main = async (p: { template: string }) => {
         { name: "oxx: Major", value: "oxx" },
       ],
       search: true,
-      after: async (keyValue, next) => {
+      before: async (keyValue, next) => {
         state.template = templateService.fillInTemplate({
           template: state.template,
           keyValue,
@@ -73,7 +64,7 @@ const main = async (p: { template: string }) => {
       type: Select,
       options: gitmojis,
       search: true,
-      after: async (keyValue, next) => {
+      before: async (keyValue, next) => {
         state.template = templateService.fillInTemplate({
           template: state.template,
           keyValue,
@@ -173,6 +164,21 @@ const main = async (p: { template: string }) => {
       name: "body",
       message: "Enter body.",
       type: Input,
+      before: async (keyValue, next) => {
+        state.template = templateService.fillInTemplate({
+          template: state.template,
+          keyValue,
+        });
+
+        terminal.render({
+          value: templateService.cleanTemplate({
+            template: state.template,
+            name: "body",
+          }),
+        });
+
+        await next();
+      },
       after: async (keyValue, next) => {
         state.template = templateService.fillInTemplate({
           template: state.template,
