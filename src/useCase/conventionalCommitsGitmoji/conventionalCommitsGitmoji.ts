@@ -257,6 +257,34 @@ const main = async (p: { template: string }) => {
         await next();
       },
     },
+    {
+      name: "breakingChange",
+      message: "Enter breakingChange.",
+      type: Input,
+      before: async (answerVo, next) => {
+        state.template = templateService.templateFillIn({
+          template: state.template,
+          answerVo,
+        });
+        terminal.render({
+          value: templateService.templateHighlight({
+            template: state.template,
+            name: "breakingChange",
+          }),
+        });
+        await next();
+      },
+      after: async (answerVo, next) => {
+        state.template = templateService.templateFillIn({
+          template: state.template,
+          answerVo,
+        });
+
+        // カスタム
+        state.template = state.template.replace(/BREAKING CHANGE: $/, "")
+          .trim(), await next();
+      },
+    },
   ])
     .then(() => state.template)
     .catch((e) => {
@@ -269,7 +297,8 @@ export const run = () => {
   const template =
     `{{type}}({{scope}}): {{gitmoji}} {{subject}} Close #{{issue}}
 
-{{body}}`;
+{{body}}
+BREAKING CHANGE: {{breakingChange}}`;
 
   main({ template })
     .then((v) => git.setCommitMessage({ message: v }))
