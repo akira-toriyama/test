@@ -1,0 +1,6 @@
+{
+  "tasks": {
+    "qualityCheck": "deno fmt --check && deno lint && deno task qualityCheck:test",
+    "qualityCheck:test": "deno test --parallel --shuffle --doc"
+  }
+}

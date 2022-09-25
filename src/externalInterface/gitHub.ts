@@ -31,7 +31,7 @@ export const fetchIssues: FetchIssues = () =>
     cmd: ["gh", "issue", "list", "--assignee=@me", "--json=number,title,body"],
   }).then<IssuesStruct>((v) => {
     if (typeof v === "string") {
-      JSON.parse(v);
+      return JSON.parse(v);
     }
     return [];
   }).then((v) => (
