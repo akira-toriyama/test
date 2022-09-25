@@ -253,7 +253,7 @@ const main = async (p: { template: string }) => {
         });
 
         // カスタム
-        state.template = state.template.trim().trim();
+        state.template = state.template.replace(/\r?\n{2,}/, "\n\n").trim();
         await next();
       },
     },
@@ -305,3 +305,10 @@ BREAKING CHANGE: {{breakingChange}}`;
     .then((v) => git.setCommitMessage({ message: v }))
     .catch(console.error);
 };
+
+// ┌─────────────────────────────────┐
+// │ xxx: :art:  Close #4            │
+// │                                 │
+// │ xi                              │
+// │ BREAKING CHANGE: breakingChange │
+// └─────────────────────────────────┘
