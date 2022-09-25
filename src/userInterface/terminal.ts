@@ -7,10 +7,9 @@ type Render = (p: {
 }) => void;
 export const render: Render = (p) => {
   console.clear();
+
   new Table()
-    .header([
-      p.value,
-    ])
+    .header([p.value])
     .chars({
       "top": borderColor("─"),
       "topMid": borderColor("┬"),
@@ -30,4 +29,7 @@ export const render: Render = (p) => {
     })
     .border(true)
     .render();
+
+  // spinner.color = "yellow";
+  // spinner.text = "Loading dinosaurs";
 };

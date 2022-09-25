@@ -11,6 +11,7 @@ import * as templateService from "../../service/template.ts";
 import * as git from "../../externalInterface/git.ts";
 import * as terminal from "../../userInterface/terminal.ts";
 import * as util from "./util.ts";
+import Kia from "https://deno.land/x/kia@0.4.1/mod.ts";
 
 const initialize = async (p: { template: string }) => {
   const [issues] = await Promise.all([
@@ -24,9 +25,13 @@ const initialize = async (p: { template: string }) => {
 };
 
 const main = async (p: { template: string }) => {
+  console.clear();
+  const kia2 = new Kia();
+  kia2.start("initialize...");
   const { issues, state } = await initialize({
     template: p.template,
   });
+  kia2.succeed("initialize...");
 
   return prompt([
     {
@@ -142,6 +147,10 @@ const main = async (p: { template: string }) => {
           return true;
         }
 
+        console.clear();
+        const kia = new Kia();
+        kia.start("Submitting...");
+
         return grammar.grammarCheck({
           txt: input,
           grammarAuthKey: Deno.env.get("GRAMMAR_API_KEY"),
@@ -166,6 +175,8 @@ const main = async (p: { template: string }) => {
             }
             console.clear();
             console.error(util.subject.fmt(r));
+
+            kia.fail("xxx");
             // error
             return "";
           });
@@ -305,10 +316,3 @@ BREAKING CHANGE: {{breakingChange}}`;
     .then((v) => git.setCommitMessage({ message: v }))
     .catch(console.error);
 };
-
-// ┌─────────────────────────────────┐
-// │ xxx: :art:  Close #4            │
-// │                                 │
-// │ xi                              │
-// │ BREAKING CHANGE: breakingChange │
-// └─────────────────────────────────┘
