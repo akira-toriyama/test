@@ -64,6 +64,45 @@ const main = async (p: { template: string }) => {
       },
     },
     {
+      name: "scope",
+      message: "Select a scope.",
+      type: Select,
+      options: [
+        { name: "Not selected", value: "_" },
+        { name: "aaa", value: "aaa" },
+        { name: "bbb: Major", value: "bbb" },
+      ],
+      search: true,
+      before: async (answerVo, next) => {
+        state.template = templateService.templateFillIn({
+          template: state.template,
+          answerVo,
+        });
+
+        terminal.render({
+          value: templateService.templateHighlight({
+            template: state.template,
+            name: "scope",
+          }),
+        });
+
+        await next();
+      },
+      after: async (answerVo, next) => {
+        state.template = templateService.templateFillIn({
+          template: state.template,
+          answerVo,
+        });
+
+        // カスタム
+        state.template = state.template.replace(
+          "(_)",
+          "",
+        ).trim();
+        await next();
+      },
+    },
+    {
       name: "gitmoji",
       message: "Select a gitmoji.",
       type: Select,
@@ -227,7 +266,8 @@ const main = async (p: { template: string }) => {
 };
 
 export const run = () => {
-  const template = `{{type}}: {{gitmoji}} {{subject}} Close #{{issue}}
+  const template =
+    `{{type}}({{scope}}): {{gitmoji}} {{subject}} Close #{{issue}}
 
 {{body}}`;
 
