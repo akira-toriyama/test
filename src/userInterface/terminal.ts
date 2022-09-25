@@ -1,5 +1,6 @@
 import { Table } from "https://deno.land/x/cliffy@v0.25.0/table/mod.ts";
 import { colors } from "https://deno.land/x/cliffy@v0.25.0/ansi/colors.ts";
+import Kia from "https://deno.land/x/kia@0.4.1/mod.ts";
 
 const borderColor = colors.green;
 type Render = (p: {
@@ -29,7 +30,8 @@ export const render: Render = (p) => {
     })
     .border(true)
     .render();
-
-  // spinner.color = "yellow";
-  // spinner.text = "Loading dinosaurs";
 };
+
+const kia = new Kia({ color: "green" });
+
+export const sp = kia;

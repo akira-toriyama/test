@@ -11,7 +11,6 @@ import * as templateService from "../../service/template.ts";
 import * as git from "../../externalInterface/git.ts";
 import * as terminal from "../../userInterface/terminal.ts";
 import * as util from "./util.ts";
-import Kia from "https://deno.land/x/kia@0.4.1/mod.ts";
 
 const initialize = async (p: { template: string }) => {
   const [issues] = await Promise.all([
@@ -26,12 +25,12 @@ const initialize = async (p: { template: string }) => {
 
 const main = async (p: { template: string }) => {
   console.clear();
-  const kia2 = new Kia();
-  kia2.start("initialize...");
+
+  terminal.sp.start("initialize...");
   const { issues, state } = await initialize({
     template: p.template,
   });
-  kia2.succeed("initialize...");
+  terminal.sp.succeed();
 
   return prompt([
     {
@@ -148,8 +147,7 @@ const main = async (p: { template: string }) => {
         }
 
         console.clear();
-        const kia = new Kia();
-        kia.start("Submitting...");
+        terminal.sp.start("Submitting...");
 
         return grammar.grammarCheck({
           txt: input,
@@ -173,12 +171,24 @@ const main = async (p: { template: string }) => {
             if (util.subject.isValid(r)) {
               return true;
             }
-            console.clear();
+
+            state.template = templateService.templateFillIn({
+              template: state.template,
+              answerVo: {},
+            });
+            terminal.render({
+              value: templateService.templateHighlight({
+                template: state.template,
+                name: "subject",
+              }),
+            });
+
             console.error(util.subject.fmt(r));
 
-            kia.fail("xxx");
             // error
             return "";
+          }).finally(() => {
+            terminal.sp.stop();
           });
       },
       before: async (answerVo, next) => {
