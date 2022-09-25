@@ -280,9 +280,10 @@ const main = async (p: { template: string }) => {
           answerVo,
         });
 
-        // カスタム
+        // カスタム-
         state.template = state.template.replace(/BREAKING CHANGE: $/, "")
-          .trim(), await next();
+          .trim();
+        await next();
       },
     },
   ])
