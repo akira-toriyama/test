@@ -11,7 +11,6 @@ import * as templateService from "../../service/template.ts";
 import * as git from "../../externalInterface/git.ts";
 import * as terminal from "../../userInterface/terminal.ts";
 import * as util from "./util.ts";
-import { cursorNextLine } from "https://deno.land/x/cliffy@v0.25.0/ansi/ansi_escapes.ts";
 
 const initialize = async (p: { template: string }) => {
   const [gitmojis, issues] = await Promise.all([
@@ -43,13 +42,13 @@ const main = async (p: { template: string }) => {
       ],
       search: true,
       before: async (answerVo, next) => {
-        state.template = templateService.fillInTemplate({
+        state.template = templateService.templateFillIn({
           template: state.template,
           answerVo,
         });
 
         terminal.render({
-          value: templateService.cleanTemplate({
+          value: templateService.templateHighlight({
             template: state.template,
             name: "type",
           }),
@@ -58,7 +57,7 @@ const main = async (p: { template: string }) => {
         await next();
       },
       after: async (answerVo, next) => {
-        state.template = templateService.fillInTemplate({
+        state.template = templateService.templateFillIn({
           template: state.template,
           answerVo,
         });
@@ -72,13 +71,13 @@ const main = async (p: { template: string }) => {
       options: gitmojis,
       search: true,
       before: async (answerVo, next) => {
-        state.template = templateService.fillInTemplate({
+        state.template = templateService.templateFillIn({
           template: state.template,
           answerVo,
         });
 
         terminal.render({
-          value: templateService.cleanTemplate({
+          value: templateService.templateHighlight({
             template: state.template,
             name: "gitmoji",
           }),
@@ -87,7 +86,7 @@ const main = async (p: { template: string }) => {
         await next();
       },
       after: async (answerVo, next) => {
-        state.template = templateService.fillInTemplate({
+        state.template = templateService.templateFillIn({
           template: state.template,
           answerVo,
         });
@@ -134,13 +133,13 @@ const main = async (p: { template: string }) => {
           });
       },
       before: async (answerVo, next) => {
-        state.template = templateService.fillInTemplate({
+        state.template = templateService.templateFillIn({
           template: state.template,
           answerVo,
         });
 
         terminal.render({
-          value: templateService.cleanTemplate({
+          value: templateService.templateHighlight({
             template: state.template,
             name: "subject",
           }),
@@ -149,7 +148,7 @@ const main = async (p: { template: string }) => {
         await next();
       },
       after: async (answerVo, next) => {
-        state.template = templateService.fillInTemplate({
+        state.template = templateService.templateFillIn({
           template: state.template,
           answerVo,
         });
@@ -163,13 +162,13 @@ const main = async (p: { template: string }) => {
       options: [{ name: "Not selected", value: "_" }, ...issues],
       search: true,
       before: async (answerVo, next) => {
-        state.template = templateService.fillInTemplate({
+        state.template = templateService.templateFillIn({
           template: state.template,
           answerVo,
         });
 
         terminal.render({
-          value: templateService.cleanTemplate({
+          value: templateService.templateHighlight({
             template: state.template,
             name: "issue",
           }),
@@ -178,7 +177,7 @@ const main = async (p: { template: string }) => {
         await next();
       },
       after: async (answerVo, next) => {
-        state.template = templateService.fillInTemplate({
+        state.template = templateService.templateFillIn({
           template: state.template,
           answerVo,
         });
@@ -197,12 +196,12 @@ const main = async (p: { template: string }) => {
       message: "Enter body.",
       type: Input,
       before: async (answerVo, next) => {
-        state.template = templateService.fillInTemplate({
+        state.template = templateService.templateFillIn({
           template: state.template,
           answerVo,
         });
         terminal.render({
-          value: templateService.cleanTemplate({
+          value: templateService.templateHighlight({
             template: state.template,
             name: "body",
           }),
@@ -210,7 +209,7 @@ const main = async (p: { template: string }) => {
         await next();
       },
       after: async (answerVo, next) => {
-        state.template = templateService.fillInTemplate({
+        state.template = templateService.templateFillIn({
           template: state.template,
           answerVo,
         });
