@@ -13,19 +13,18 @@ import * as terminal from "../../userInterface/terminal.ts";
 import * as util from "./util.ts";
 
 const initialize = async (p: { template: string }) => {
-  const [gitmojis, issues] = await Promise.all([
-    gitmoji.fetchGitmojis(),
+  const [issues] = await Promise.all([
     gitHub.fetchIssues(),
   ]);
   class State {
     constructor(public template: string) {}
   }
   const state = new State(p.template);
-  return { gitmojis, issues, state };
+  return { issues, state };
 };
 
 const main = async (p: { template: string }) => {
-  const { gitmojis, issues, state } = await initialize({
+  const { issues, state } = await initialize({
     template: p.template,
   });
 
@@ -68,7 +67,7 @@ const main = async (p: { template: string }) => {
       name: "gitmoji",
       message: "Select a gitmoji.",
       type: Select,
-      options: gitmojis,
+      options: gitmoji.getGitmojis(),
       search: true,
       before: async (answerVo, next) => {
         state.template = templateService.templateFillIn({
