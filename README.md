@@ -17,3 +17,5 @@ TPLのロード https://github.com/c4spar/deno-cliffy/issues/447
 https://yoshixmk.github.io/deno-manual-ja/linking_to_external_code.html
 https://developer.mamezou-tech.com/deno/getting-started/02-use-external-packages/
 https://deno.land/manual/typescript/configuration
+
+mod.ts

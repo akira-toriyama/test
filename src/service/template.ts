@@ -26,9 +26,6 @@ type PrepareTemplate = (pp: { highlighter: TargetHighlighter }) => (p: {
 }) => string;
 export const prepareTemplate: PrepareTemplate = (pp) => (p) =>
   p.template
-    .replace(
-      new RegExp(p.name),
-      pp.highlighter(p.name),
-    )
+    .replace(p.name, pp.highlighter(p.name))
     .replace(new RegExp("{{", "g"), "")
     .replace(new RegExp("}}", "g"), "");

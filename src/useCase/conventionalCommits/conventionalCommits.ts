@@ -5,9 +5,7 @@ import {
   SelectOptions,
 } from "https://deno.land/x/cliffy@v0.25.0/prompt/mod.ts";
 import * as gitmoji from "../../externalInterface/gitmoji.ts";
-import * as grammar from "../../externalInterface/grammar.ts";
 import * as gitHub from "../../externalInterface/gitHub.ts";
-import * as translator from "../../service/translator.ts";
 import * as templateService from "../../service/template.ts";
 import * as terminal from "../../userInterface/terminal.ts";
 import * as util from "./util.ts";
@@ -38,13 +36,11 @@ type Initialize = (p: {
 }>;
 
 const initialize: Initialize = async (p) => {
-  console.clear();
-  terminal.spinner.start("initialize...");
-
+  terminal.spinner.start({ text: "initialize..." });
   const [issues] = await Promise.all([
     gitHub.fetchIssues(),
   ]).finally(() => {
-    terminal.spinner.succeed();
+    terminal.spinner.stop();
   });
 
   return {
@@ -181,8 +177,7 @@ export const main: Main = async (p) => {
       hint:
         "Surrounding it with an ` allows it. example: Add myFunc -> Add `myFunc`",
       validate: async (input) => {
-        console.clear();
-        terminal.spinner.start("Submitting...");
+        terminal.spinner.start({ text: "Submitting..." });
 
         const r = await validation.validate(input)
           .catch((e) => {
