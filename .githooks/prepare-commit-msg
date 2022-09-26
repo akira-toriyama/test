@@ -4,5 +4,5 @@ if [[ "$(git config --get my.interactive)" = yes ]];then
     # git -c my.interactive=yes commit
 
     # envは、引数から
-    exec < /dev/tty deno run --unstable --allow-net --allow-env --allow-run --allow-write src/useCase/conventionalCommitsGitmoji/run.ts
+    exec < /dev/tty deno run --unstable --allow-net --allow-env --allow-run --allow-write src/useCase/conventionalCommits/run.ts
 fi

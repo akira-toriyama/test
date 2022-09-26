@@ -11,54 +11,73 @@ import * as translator from "../../service/translator.ts";
 import * as templateService from "../../service/template.ts";
 import * as terminal from "../../userInterface/terminal.ts";
 import * as util from "./util.ts";
+import * as validation from "../../service/validation.ts";
 
-const initialize = async (
-  p: {
+class State {
+  constructor(public template: string) {}
+}
+type Initialize = (p: {
+  userInterFace: {
     template: string;
-    borderColorSetter: terminal.BorderColorSetter;
     targetHighlighter: templateService.TargetHighlighter;
-  },
-) => {
+    borderColorSetter: terminal.BorderColorSetter;
+  };
+}) => Promise<{
+  issues: never[] | {
+    name: string;
+    value: string;
+  }[];
+  templateRender: (p: {
+    value: string;
+  }) => void;
+  prepareTemplate: (p: {
+    template: string;
+    name: string;
+  }) => string;
+  state: State;
+}>;
+
+const initialize: Initialize = async (p) => {
   console.clear();
   terminal.spinner.start("initialize...");
+
   const [issues] = await Promise.all([
     gitHub.fetchIssues(),
-  ]);
-  terminal.spinner.succeed();
+  ]).finally(() => {
+    terminal.spinner.succeed();
+  });
 
   return {
     issues,
     templateRender: terminal.createTemplateRender({
-      borderColorSetter: p.borderColorSetter,
+      borderColorSetter: p.userInterFace.borderColorSetter,
     }),
     prepareTemplate: templateService.prepareTemplate({
-      highlighter: p.targetHighlighter,
+      highlighter: p.userInterFace.targetHighlighter,
     }),
-    state: new class {
-      constructor(public template: string) {}
-    }(p.template),
+    state: new State(p.userInterFace.template),
   };
 };
 
-export const main = async (
-  p: {
-    template: string;
+type Main = (p: {
+  question: {
     type: {
       options: SelectOptions["options"];
     };
     scope: {
       options: SelectOptions["options"];
     };
+  };
+  userInterFace: {
+    template: string;
     targetHighlighter: templateService.TargetHighlighter;
     borderColorSetter: terminal.BorderColorSetter;
-  },
-) => {
+  };
+}) => Promise<string>;
+
+export const main: Main = async (p) => {
   const { issues, state, templateRender, prepareTemplate } = await initialize(
-    {
-      template: p.template,
-      borderColorSetter: p.borderColorSetter,
-      targetHighlighter: p.targetHighlighter,
-    },
+    p,
   );
 
   return prompt([
@@ -66,7 +85,7 @@ export const main = async (
       name: "type",
       message: "Select a type.",
       type: Select,
-      options: p.type.options,
+      options: p.question.type.options,
       search: true,
       before: async (answerVo, next) => {
         state.template = templateService.templateFillIn({
@@ -95,7 +114,7 @@ export const main = async (
       name: "scope",
       message: "Select a scope.",
       type: Select,
-      options: p.scope.options,
+      options: p.question.scope.options,
       search: true,
       before: async (answerVo, next) => {
         state.template = templateService.templateFillIn({
@@ -161,55 +180,74 @@ export const main = async (
       type: Input,
       hint:
         "Surrounding it with an ` allows it. example: Add myFunc -> Add `myFunc`",
-      validate: (input) => {
-        if (!input) {
-          return true;
-        }
-
+      validate: async (input) => {
         console.clear();
         terminal.spinner.start("Submitting...");
 
-        return grammar.grammarCheck({
-          txt: input,
-          grammarAuthKey: Deno.env.get("GRAMMAR_API_KEY"),
-        })
-          .then(async (v) => {
-            if (!v) {
-              return v;
-            }
-
-            const r = await translator.translate({
-              messages: v,
-              translate: {
-                targetLang: Deno.env.get("DEEPL_TARGET_LANG"),
-                authKey: Deno.env.get("DEEPL_AUTH_KEY"),
-              },
-            });
-            return r;
+        const r = await validation.validate(input)
+          .catch((e) => {
+            console.error(e);
+            // it can't be helped
+            return { type: "valid" } as const;
           })
-          .then((r) => {
-            if (util.subject.isValid(r)) {
-              return true;
-            }
-
-            state.template = templateService.templateFillIn({
-              template: state.template,
-              answerVo: {},
-            });
-            templateRender({
-              value: prepareTemplate({
-                template: state.template,
-                name: "subject",
-              }),
-            });
-
-            console.error(util.subject.fmt(r));
-
-            // error
-            return "";
-          }).finally(() => {
+          .finally(() => {
             terminal.spinner.stop();
           });
+
+        if (r.type === "valid") {
+          return true;
+        }
+
+        state.template = templateService.templateFillIn({
+          template: state.template,
+          answerVo: {},
+        });
+
+        templateRender({
+          value: prepareTemplate({
+            template: state.template,
+            name: "subject",
+          }),
+        });
+
+        console.error(util.subject.fmt(r.reason));
+
+        // error;
+        return "";
+
+        // const res = await validation.validate(input)
+        //   .then((r) => {
+        //     if (util.subject.isValid(r)) {
+        //       return true;
+        //     }
+
+        //     console.error(util.subject.fmt(r));
+
+        //     state.template = templateService.templateFillIn({
+        //       template: state.template,
+        //       answerVo: {},
+        //     });
+        //     templateRender({
+        //       value: prepareTemplate({
+        //         template: state.template,
+        //         name: "subject",
+        //       }),
+        //     });
+        //     console.error(util.subject.fmt(r));
+
+        //     // error
+        //     return "";
+        //   })
+        //   .catch((e) => {
+        //     // FIXME
+        //     console.log(e);
+        //     return true;
+        //   })
+        //   .finally(() => {
+        //     terminal.spinner.stop();
+        //   });
+
+        // return res;
       },
       before: async (answerVo, next) => {
         state.template = templateService.templateFillIn({
@@ -331,8 +369,7 @@ export const main = async (
         await next();
       },
     },
-  ])
-    .then(() => state.template)
+  ]).then(() => state.template)
     .catch((e) => {
       console.error(e);
       return "";
