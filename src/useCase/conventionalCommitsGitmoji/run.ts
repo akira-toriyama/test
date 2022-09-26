@@ -25,8 +25,10 @@ BREAKING CHANGE: {{breakingChange}}`,
       { name: "bbb: Major", value: "bbb" },
     ],
   },
-  highlighter: colors.bold.bgGreen,
-  borderColor: colors.green.bold,
+  targetHighlighter: colors.bold.bgGreen,
+  borderColorSetter: colors.green.bold,
 })
   .then((v) => git.setCommitMessage({ message: v }))
   .catch(console.error);
+
+// TODO 各項目のバリデーションも

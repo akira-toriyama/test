@@ -1,12 +1,9 @@
-import { colors } from "https://deno.land/x/cliffy@v0.25.0/ansi/colors.ts";
-
-const highlighter = colors.bold.bgGreen;
-export type Highlighter = typeof highlighter;
-
-type TemplateFillIn = (p: {
-  template: string;
-  answerVo: Record<string, string | undefined>;
-}) => string;
+type TemplateFillIn = (
+  p: {
+    template: string;
+    answerVo: Record<string, string | undefined>;
+  },
+) => string;
 export const templateFillIn: TemplateFillIn = (p) => {
   const kv = Object.entries(p.answerVo);
 
@@ -21,16 +18,17 @@ export const templateFillIn: TemplateFillIn = (p) => {
   });
 };
 
-type CreateTemplateHighlighter = (pp: { highlighter: any }) => (p: {
+export type TargetHighlighter = (p: string) => string;
+
+type PrepareTemplate = (pp: { highlighter: TargetHighlighter }) => (p: {
   template: string;
   name: string;
 }) => string;
-export const createTemplateHighlighter: CreateTemplateHighlighter =
-  (pp) => (p) =>
-    p.template
-      .replace(
-        new RegExp(p.name),
-        pp.highlighter(p.name),
-      )
-      .replace(new RegExp("{{", "g"), "")
-      .replace(new RegExp("}}", "g"), "");
+export const prepareTemplate: PrepareTemplate = (pp) => (p) =>
+  p.template
+    .replace(
+      new RegExp(p.name),
+      pp.highlighter(p.name),
+    )
+    .replace(new RegExp("{{", "g"), "")
+    .replace(new RegExp("}}", "g"), "");

@@ -15,8 +15,8 @@ import * as util from "./util.ts";
 const initialize = async (
   p: {
     template: string;
-    borderColor: terminal.BorderColorColor;
-    highlighter: templateService.Highlighter;
+    borderColorSetter: terminal.BorderColorSetter;
+    targetHighlighter: templateService.TargetHighlighter;
   },
 ) => {
   const [issues] = await Promise.all([
@@ -25,9 +25,11 @@ const initialize = async (
 
   return {
     issues,
-    templateRender: terminal.createRender({ borderColor: p.borderColor }),
-    templateHighlighter: templateService.createTemplateHighlighter({
-      highlighter: p.highlighter,
+    templateRender: terminal.createTemplateRender({
+      borderColorSetter: p.borderColorSetter,
+    }),
+    prepareTemplate: templateService.prepareTemplate({
+      highlighter: p.targetHighlighter,
     }),
     state: new class {
       constructor(public template: string) {}
@@ -44,19 +46,20 @@ export const main = async (
     scope: {
       options: SelectOptions["options"];
     };
-    highlighter: templateService.Highlighter;
-    borderColor: terminal.BorderColorColor;
+    targetHighlighter: templateService.TargetHighlighter;
+    borderColorSetter: terminal.BorderColorSetter;
   },
 ) => {
   console.clear();
   terminal.sp.start("initialize...");
 
-  const { issues, state, templateRender, templateHighlighter } =
-    await initialize({
+  const { issues, state, templateRender, prepareTemplate } = await initialize(
+    {
       template: p.template,
-      borderColor: p.borderColor,
-      highlighter: p.highlighter,
-    });
+      borderColorSetter: p.borderColorSetter,
+      targetHighlighter: p.targetHighlighter,
+    },
+  );
   terminal.sp.succeed();
 
   return prompt([
@@ -73,7 +76,7 @@ export const main = async (
         });
 
         templateRender({
-          value: templateHighlighter({
+          value: prepareTemplate({
             template: state.template,
             name: "type",
           }),
@@ -102,7 +105,7 @@ export const main = async (
         });
 
         templateRender({
-          value: templateHighlighter({
+          value: prepareTemplate({
             template: state.template,
             name: "scope",
           }),
@@ -137,7 +140,7 @@ export const main = async (
         });
 
         templateRender({
-          value: templateHighlighter({
+          value: prepareTemplate({
             template: state.template,
             name: "gitmoji",
           }),
@@ -195,7 +198,7 @@ export const main = async (
               answerVo: {},
             });
             templateRender({
-              value: templateHighlighter({
+              value: prepareTemplate({
                 template: state.template,
                 name: "subject",
               }),
@@ -216,7 +219,7 @@ export const main = async (
         });
 
         templateRender({
-          value: templateHighlighter({
+          value: prepareTemplate({
             template: state.template,
             name: "subject",
           }),
@@ -249,7 +252,7 @@ export const main = async (
         });
 
         templateRender({
-          value: templateHighlighter({
+          value: prepareTemplate({
             template: state.template,
             name: "issue",
           }),
@@ -282,7 +285,7 @@ export const main = async (
           answerVo,
         });
         templateRender({
-          value: templateHighlighter({
+          value: prepareTemplate({
             template: state.template,
             name: "body",
           }),
@@ -310,7 +313,7 @@ export const main = async (
           answerVo,
         });
         templateRender({
-          value: templateHighlighter({
+          value: prepareTemplate({
             template: state.template,
             name: "breakingChange",
           }),
