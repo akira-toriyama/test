@@ -19,9 +19,12 @@ const initialize = async (
     targetHighlighter: templateService.TargetHighlighter;
   },
 ) => {
+  console.clear();
+  terminal.spinner.start("initialize...");
   const [issues] = await Promise.all([
     gitHub.fetchIssues(),
   ]);
+  terminal.spinner.succeed();
 
   return {
     issues,
@@ -50,9 +53,6 @@ export const main = async (
     borderColorSetter: terminal.BorderColorSetter;
   },
 ) => {
-  console.clear();
-  terminal.sp.start("initialize...");
-
   const { issues, state, templateRender, prepareTemplate } = await initialize(
     {
       template: p.template,
@@ -60,7 +60,6 @@ export const main = async (
       targetHighlighter: p.targetHighlighter,
     },
   );
-  terminal.sp.succeed();
 
   return prompt([
     {
@@ -168,7 +167,7 @@ export const main = async (
         }
 
         console.clear();
-        terminal.sp.start("Submitting...");
+        terminal.spinner.start("Submitting...");
 
         return grammar.grammarCheck({
           txt: input,
@@ -209,7 +208,7 @@ export const main = async (
             // error
             return "";
           }).finally(() => {
-            terminal.sp.stop();
+            terminal.spinner.stop();
           });
       },
       before: async (answerVo, next) => {

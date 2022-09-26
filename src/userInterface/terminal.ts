@@ -39,8 +39,7 @@ export const createTemplateRender: CreateTemplateRender = (pp) => (p) => {
     .render();
 };
 
-const kia = new Kia({ color: "green" });
-export const sp = kia;
+export const spinner = new Kia();
 
 export const separator = Select.separator(
   "------------------------",
