@@ -2,34 +2,61 @@ import {
   Input,
   prompt,
   Select,
+  SelectOptions,
 } from "https://deno.land/x/cliffy@v0.25.0/prompt/mod.ts";
 import * as gitmoji from "../../externalInterface/gitmoji.ts";
 import * as grammar from "../../externalInterface/grammar.ts";
 import * as gitHub from "../../externalInterface/gitHub.ts";
 import * as translator from "../../service/translator.ts";
 import * as templateService from "../../service/template.ts";
-import * as git from "../../externalInterface/git.ts";
 import * as terminal from "../../userInterface/terminal.ts";
 import * as util from "./util.ts";
 
-const initialize = async (p: { template: string }) => {
+const initialize = async (
+  p: {
+    template: string;
+    borderColor: terminal.BorderColorColor;
+    highlighter: templateService.Highlighter;
+  },
+) => {
   const [issues] = await Promise.all([
     gitHub.fetchIssues(),
   ]);
-  class State {
-    constructor(public template: string) {}
-  }
-  const state = new State(p.template);
-  return { issues, state };
+
+  return {
+    issues,
+    templateRender: terminal.createRender({ borderColor: p.borderColor }),
+    templateHighlighter: templateService.createTemplateHighlighter({
+      highlighter: p.highlighter,
+    }),
+    state: new class {
+      constructor(public template: string) {}
+    }(p.template),
+  };
 };
 
-const main = async (p: { template: string }) => {
+export const main = async (
+  p: {
+    template: string;
+    type: {
+      options: SelectOptions["options"];
+    };
+    scope: {
+      options: SelectOptions["options"];
+    };
+    highlighter: templateService.Highlighter;
+    borderColor: terminal.BorderColorColor;
+  },
+) => {
   console.clear();
-
   terminal.sp.start("initialize...");
-  const { issues, state } = await initialize({
-    template: p.template,
-  });
+
+  const { issues, state, templateRender, templateHighlighter } =
+    await initialize({
+      template: p.template,
+      borderColor: p.borderColor,
+      highlighter: p.highlighter,
+    });
   terminal.sp.succeed();
 
   return prompt([
@@ -37,12 +64,7 @@ const main = async (p: { template: string }) => {
       name: "type",
       message: "Select a type.",
       type: Select,
-      options: [
-        { name: "xxx: No release", value: "xxx" },
-        { name: "xxo: Patch", value: "xxo" },
-        { name: "xox: Minor", value: "xox" },
-        { name: "oxx: Major", value: "oxx" },
-      ],
+      options: p.type.options,
       search: true,
       before: async (answerVo, next) => {
         state.template = templateService.templateFillIn({
@@ -50,8 +72,8 @@ const main = async (p: { template: string }) => {
           answerVo,
         });
 
-        terminal.render({
-          value: templateService.templateHighlight({
+        templateRender({
+          value: templateHighlighter({
             template: state.template,
             name: "type",
           }),
@@ -71,11 +93,7 @@ const main = async (p: { template: string }) => {
       name: "scope",
       message: "Select a scope.",
       type: Select,
-      options: [
-        { name: "Not selected", value: "_" },
-        { name: "aaa", value: "aaa" },
-        { name: "bbb: Major", value: "bbb" },
-      ],
+      options: p.scope.options,
       search: true,
       before: async (answerVo, next) => {
         state.template = templateService.templateFillIn({
@@ -83,8 +101,8 @@ const main = async (p: { template: string }) => {
           answerVo,
         });
 
-        terminal.render({
-          value: templateService.templateHighlight({
+        templateRender({
+          value: templateHighlighter({
             template: state.template,
             name: "scope",
           }),
@@ -118,8 +136,8 @@ const main = async (p: { template: string }) => {
           answerVo,
         });
 
-        terminal.render({
-          value: templateService.templateHighlight({
+        templateRender({
+          value: templateHighlighter({
             template: state.template,
             name: "gitmoji",
           }),
@@ -176,8 +194,8 @@ const main = async (p: { template: string }) => {
               template: state.template,
               answerVo: {},
             });
-            terminal.render({
-              value: templateService.templateHighlight({
+            templateRender({
+              value: templateHighlighter({
                 template: state.template,
                 name: "subject",
               }),
@@ -197,8 +215,8 @@ const main = async (p: { template: string }) => {
           answerVo,
         });
 
-        terminal.render({
-          value: templateService.templateHighlight({
+        templateRender({
+          value: templateHighlighter({
             template: state.template,
             name: "subject",
           }),
@@ -218,7 +236,11 @@ const main = async (p: { template: string }) => {
       name: "issue",
       message: "Select a issue.",
       type: Select,
-      options: [{ name: "Not selected", value: "_" }, ...issues],
+      options: [
+        { name: "Not selected", value: "_" },
+        terminal.separator,
+        ...issues,
+      ],
       search: true,
       before: async (answerVo, next) => {
         state.template = templateService.templateFillIn({
@@ -226,8 +248,8 @@ const main = async (p: { template: string }) => {
           answerVo,
         });
 
-        terminal.render({
-          value: templateService.templateHighlight({
+        templateRender({
+          value: templateHighlighter({
             template: state.template,
             name: "issue",
           }),
@@ -259,8 +281,8 @@ const main = async (p: { template: string }) => {
           template: state.template,
           answerVo,
         });
-        terminal.render({
-          value: templateService.templateHighlight({
+        templateRender({
+          value: templateHighlighter({
             template: state.template,
             name: "body",
           }),
@@ -287,8 +309,8 @@ const main = async (p: { template: string }) => {
           template: state.template,
           answerVo,
         });
-        terminal.render({
-          value: templateService.templateHighlight({
+        templateRender({
+          value: templateHighlighter({
             template: state.template,
             name: "breakingChange",
           }),
@@ -313,16 +335,4 @@ const main = async (p: { template: string }) => {
       console.error(e);
       return "";
     });
-};
-
-export const run = () => {
-  const template =
-    `{{type}}({{scope}}): {{gitmoji}} {{subject}} Close #{{issue}}
-
-{{body}}
-BREAKING CHANGE: {{breakingChange}}`;
-
-  main({ template })
-    .then((v) => git.setCommitMessage({ message: v }))
-    .catch(console.error);
 };

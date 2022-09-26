@@ -1,19 +1,7 @@
 import { colors } from "https://deno.land/x/cliffy@v0.25.0/ansi/colors.ts";
 
-const currentColor = colors.bold.bgGreen;
-
-type TemplateHighlight = (p: {
-  template: string;
-  name: string;
-}) => string;
-export const templateHighlight: TemplateHighlight = (p) =>
-  p.template
-    .replace(
-      new RegExp(p.name),
-      currentColor(p.name),
-    )
-    .replace(new RegExp("{{", "g"), "")
-    .replace(new RegExp("}}", "g"), "");
+const highlighter = colors.bold.bgGreen;
+export type Highlighter = typeof highlighter;
 
 type TemplateFillIn = (p: {
   template: string;
@@ -32,3 +20,17 @@ export const templateFillIn: TemplateFillIn = (p) => {
     answerVo: Object.fromEntries(kv),
   });
 };
+
+type CreateTemplateHighlighter = (pp: { highlighter: any }) => (p: {
+  template: string;
+  name: string;
+}) => string;
+export const createTemplateHighlighter: CreateTemplateHighlighter =
+  (pp) => (p) =>
+    p.template
+      .replace(
+        new RegExp(p.name),
+        pp.highlighter(p.name),
+      )
+      .replace(new RegExp("{{", "g"), "")
+      .replace(new RegExp("}}", "g"), "");
