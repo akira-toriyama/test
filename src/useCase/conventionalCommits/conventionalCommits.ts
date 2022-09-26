@@ -214,40 +214,6 @@ export const main: Main = async (p) => {
 
         // error;
         return "";
-
-        // const res = await validation.validate(input)
-        //   .then((r) => {
-        //     if (util.subject.isValid(r)) {
-        //       return true;
-        //     }
-
-        //     console.error(util.subject.fmt(r));
-
-        //     state.template = templateService.templateFillIn({
-        //       template: state.template,
-        //       answerVo: {},
-        //     });
-        //     templateRender({
-        //       value: prepareTemplate({
-        //         template: state.template,
-        //         name: "subject",
-        //       }),
-        //     });
-        //     console.error(util.subject.fmt(r));
-
-        //     // error
-        //     return "";
-        //   })
-        //   .catch((e) => {
-        //     // FIXME
-        //     console.log(e);
-        //     return true;
-        //   })
-        //   .finally(() => {
-        //     terminal.spinner.stop();
-        //   });
-
-        // return res;
       },
       before: async (answerVo, next) => {
         state.template = templateService.templateFillIn({
@@ -336,7 +302,7 @@ export const main: Main = async (p) => {
         });
 
         // カスタム
-        state.template = state.template.replace(/\r?\n{2,}/, "\n\n").trim();
+        state.template = state.template.replace(/\r?\n{2,}/, "\n").trim();
         await next();
       },
     },
