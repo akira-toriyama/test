@@ -1,22 +1,18 @@
 version: v1
 
 labels:
-  - label: "feat"
+  - label: "x.x.x"
     matcher:
-      title: "^feat: .*"
-      commits: "^feat: .*"
-
-  - label: "fix"
+      commits: ":\\(x.x.x\\): .*"
+  - label: "x.x.o"
     matcher:
-      title: "^fix: .*"
-      commits: "^fix: .*"
-
-  - label: "chore"
+      commits: ":\\(x.x.o\\): .*"
+  - label: "x.o.x"
     matcher:
-      title: "^chore: .*"
-      commits: "^chore: .*"
-
-  - label: "docs"
+      commits: ":\\(x.o.x\\): .*"
+  - label: "o.x.x"
     matcher:
-      title: "^docs: .*"
-      commits: "^docs: .*"
+      commits: ":\\(o.x.x\\): .*"
+  - label: "?.?.?"
+    matcher:
+      commits: ":\\(?.?.?\\): .*"

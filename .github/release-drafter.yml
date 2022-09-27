@@ -4,23 +4,28 @@ template: |
   # What's Changed
   $CHANGES
   **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
+
 categories:
-  - title: 'Breaking'
-    label: 'feat'
-  - title: 'New'
-    label: 'fix'
-    collapse-after: 5
+  - title: 'o.x.x'
+    labels:
+      - 'o.x.x'
+  - title: 'x.o.x'
+    labels:
+      - 'x.o.x'
+  - title: 'x.x.o'
+    labels:
+      - 'x.x.o'
+  - title: 'x.x.x'
+    labels:
+      - 'x.x.x'
 
 version-resolver:
   major:
     labels:
-      - 'breaking'
+      - 'o.x.x'
   minor:
     labels:
-      - 'feat'
+      - 'x.o.x'
   patch:
     labels:
-      - 'fix'
-
-exclude-labels:
-  - 'skip-changelog'
+      - 'x.x.x'
