@@ -9,9 +9,11 @@ import { colors } from "https://deno.land/x/cliffy@v0.25.0/ansi/colors.ts";
 
 class State {
   constructor(public template: string) {}
-
   fixTemplateBody() {
     this.template = this.template.replace(/\r?\n{2,}/, "\n").trim();
+  }
+  fixTemplateIssue() {
+    this.template = this.template.replace("{{issue}}", "");
   }
 }
 
@@ -193,6 +195,12 @@ export const main: Main = async (p) => {
       options: p.question.issues.options,
       search: true,
       before: async (answerVo, next) => {
+        if (p.question.issues.options.length === 2) {
+          state.fixTemplateIssue();
+          await next("body");
+          return;
+        }
+
         state.template = templateService.templateFillIn({
           template: state.template,
           answerVo,
@@ -204,7 +212,6 @@ export const main: Main = async (p) => {
             name: "issue",
           }),
         });
-
         await next();
       },
       after: async (answerVo, next) => {
@@ -212,12 +219,6 @@ export const main: Main = async (p) => {
           template: state.template,
           answerVo,
         });
-
-        // カスタム
-        state.template = state.template.replace(
-          / Close #_/,
-          "",
-        ).trim();
 
         await next();
       },
