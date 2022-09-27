@@ -11,6 +11,13 @@ import { colors } from "https://deno.land/x/cliffy@v0.25.0/ansi/colors.ts";
 
 class State {
   constructor(public template: string) {}
+
+  removeClosePrefix() {
+    this.template = this.template.replace(
+      / Close #_/,
+      "",
+    ).trim();
+  }
 }
 type Initialize = (p: {
   userInterFace: {
@@ -18,7 +25,11 @@ type Initialize = (p: {
     targetHighlighter?: templateService.TargetHighlighter;
     borderColorSetter?: terminal.BorderColorSetter;
   };
-}) => {
+}) => Promise<{
+  issues: never[] | {
+    name: string;
+    value: string;
+  }[];
   templateRender: (p: {
     value: string;
   }) => void;
@@ -27,10 +38,18 @@ type Initialize = (p: {
     name: string;
   }) => string;
   state: State;
-};
+}>;
 
-const initialize: Initialize = (p) => {
+const initialize: Initialize = async (p) => {
+  terminal.spinner.start({ text: "initialize..." });
+  const [issues] = await Promise.all([
+    gitHub.fetchIssues(),
+  ]).finally(() => {
+    terminal.spinner.stop();
+  });
+
   return {
+    issues,
     templateRender: terminal.createTemplateRender({
       borderColorSetter: p.userInterFace.borderColorSetter || colors.green.bold,
     }),
@@ -78,8 +97,8 @@ type Main = (p: {
   };
 }) => Promise<string>;
 
-export const main: Main = (p) => {
-  const { state, templateRender, prepareTemplate } = initialize(
+export const main: Main = async (p) => {
+  const { issues, state, templateRender, prepareTemplate } = await initialize(
     p,
   );
 
@@ -209,6 +228,42 @@ export const main: Main = (p) => {
           template: state.template,
           answerVo,
         });
+
+        await next();
+      },
+    },
+    {
+      name: "issue",
+      message: "Select a issue.",
+      type: Select,
+      options: [
+        { name: "Not selected", value: "_" },
+        terminal.separator,
+        ...issues,
+      ],
+      search: true,
+      before: async (answerVo, next) => {
+        state.template = templateService.templateFillIn({
+          template: state.template,
+          answerVo,
+        });
+
+        templateRender({
+          value: prepareTemplate({
+            template: state.template,
+            name: "issue",
+          }),
+        });
+
+        await next();
+      },
+      after: async (answerVo, next) => {
+        state.template = templateService.templateFillIn({
+          template: state.template,
+          answerVo,
+        });
+
+        state.removeClosePrefix();
         await next();
       },
     },
