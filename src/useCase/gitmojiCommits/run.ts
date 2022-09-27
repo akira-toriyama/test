@@ -12,7 +12,7 @@ const issues = await gitHub.fetchIssues()
   .then((r) =>
     r.map((v) => ({
       ...v,
-      value: `Close #${v.value}`,
+      value: `Close ${v.value}`,
     }))
   ).then((r) => {
     return [

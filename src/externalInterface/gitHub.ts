@@ -23,7 +23,7 @@ export const fetchIssues: FetchIssues = () =>
       name: `#${vv.number}
 title: ${vv.title}
 body: ${vv.body}`,
-      value: vv.number.toString(),
+      value: `#${vv.number}`,
     }))
   )).catch((e) => {
     console.error(e);
