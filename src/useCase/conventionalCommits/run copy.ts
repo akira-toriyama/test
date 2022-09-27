@@ -1,7 +1,7 @@
 import { main } from "./conventionalCommits.ts";
 import * as git from "../../externalInterface/git.ts";
 import * as terminal from "../../userInterface/terminal.ts";
-import * as validation from "../../service/validation.ts";
+import * as validation from "../../util/validation.ts";
 import { colors } from "https://deno.land/x/cliffy@v0.25.0/ansi/colors.ts";
 
 main({

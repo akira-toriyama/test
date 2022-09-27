@@ -60,7 +60,7 @@ const initialize: Initialize = async (p) => {
   };
 };
 
-type Validate = (
+export type Validate = (
   p: string,
 ) => Promise<
   | {
@@ -80,6 +80,9 @@ type Main = (p: {
   };
   question: {
     subject?: {
+      validate: Validate;
+    };
+    body?: {
       validate: Validate;
     };
   };
@@ -137,6 +140,66 @@ export const main: Main = async (p) => {
           value: prepareTemplate({
             template: state.template,
             name: "subject",
+          }),
+        });
+
+        await next();
+      },
+      after: async (answerVo, next) => {
+        state.template = templateService.templateFillIn({
+          template: state.template,
+          answerVo,
+        });
+
+        await next();
+      },
+    },
+    {
+      name: "body",
+      message: "Enter body.",
+      type: Input,
+      hint:
+        "Surrounding it with an ` allows it. example: Add myFunc -> Add `myFunc`",
+      validate: async (input) => {
+        if (p.question.body?.validate === undefined) {
+          return true;
+        }
+
+        terminal.spinner.start({ text: "Submitting..." });
+        const r = await p.question.body?.validate(input)
+          .finally(() => terminal.spinner.stop());
+
+        if (r.type === "valid") {
+          return true;
+        }
+
+        state.template = templateService.templateFillIn({
+          template: state.template,
+          answerVo: {},
+        });
+
+        templateRender({
+          value: prepareTemplate({
+            template: state.template,
+            name: "body",
+          }),
+        });
+
+        console.error(JSON.stringify(r.reason, null, 2));
+
+        // error;
+        return "";
+      },
+      before: async (answerVo, next) => {
+        state.template = templateService.templateFillIn({
+          template: state.template,
+          answerVo,
+        });
+
+        templateRender({
+          value: prepareTemplate({
+            template: state.template,
+            name: "body",
           }),
         });
 
