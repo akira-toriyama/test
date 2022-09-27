@@ -6,10 +6,12 @@ template: |
   $CHANGES
 
   ---
-  
+
   **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
 
-change-template: $TITLE @$AUTHOR (#$NUMBER)
+change-template: |
+  $TITLE @$AUTHOR (#$NUMBER)
+  <pre>$BODY</pre>
 
 categories:
   - title: 'o.x.x'
