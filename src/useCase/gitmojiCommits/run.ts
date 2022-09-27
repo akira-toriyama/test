@@ -3,6 +3,7 @@ import * as git from "../../externalInterface/git.ts";
 import { colors } from "https://deno.land/x/cliffy@v0.25.0/ansi/colors.ts";
 import * as validation from "../../util/validation.ts";
 import * as translator from "../../util/translator.ts";
+import * as gitmojis from "../../util/gitmojis.ts";
 
 const validate: Validate = (input) => {
   return validation.validateGrammar({
@@ -47,6 +48,9 @@ main({
 {{body}}`,
   },
   question: {
+    gitmoji: {
+      options: gitmojis.gitmojis,
+    },
     subject: {
       validate: (input) => {
         if (input.length === 0) {

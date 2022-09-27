@@ -78,6 +78,9 @@ type Main = (p: {
     borderColorSetter?: terminal.BorderColorSetter;
   };
   question: {
+    gitmoji: {
+      options: { name: string; value: string }[];
+    };
     subject: {
       validate: Validate;
     };
@@ -156,10 +159,7 @@ export const main: Main = async (p) => {
       name: "gitmoji",
       message: "Select a gitmoji.",
       type: Select,
-      options: gitmoji.getGitmojis().map((v) => ({
-        name: `${v.emoji}: ${v.description}`,
-        value: v.code,
-      })),
+      options: p.question.gitmoji.options,
       search: true,
       before: async (answerVo, next) => {
         state.template = templateService.templateFillIn({
