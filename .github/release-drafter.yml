@@ -30,4 +30,6 @@ version-resolver:
     labels:
       - 'x.x.o'
 
-change-template: '- $TITLE @$AUTHOR (#$NUMBER) $BODY'
+change-template: |
+  - $TITLE @$AUTHOR (#$NUMBER)
+  $BODY
