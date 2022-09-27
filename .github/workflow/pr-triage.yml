@@ -1,0 +1,11 @@
+on:
+  pull_request:
+    types: [ opened, edited, synchronize, ready_for_review ]
+    branches: main
+
+jobs:
+  labeler:
+    name: Labeler
+    runs-on: ubuntu-latest
+    steps:
+      - uses: fuxingloh/multi-labeler@v1

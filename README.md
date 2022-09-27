@@ -1,3 +1,8 @@
+GHA
+
+- https://github.com/marketplace/actions/multi-labeler
+- https://zenn.dev/kounoike/articles/20220211-easy-generate-release-notes
+
 git config --local core.hooksPath .githooks
 
 gh が必須
@@ -20,4 +25,4 @@ https://deno.land/manual/typescript/configuration
 
 mod.ts
 
-dd
+--
