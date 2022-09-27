@@ -3,4 +3,4 @@ version: v1
 labels:
   - label: "x.x.o"
     matcher:
-      commits: ":(x.x.o): .*"
+      commits: ":\(x.x.o\): .*"
