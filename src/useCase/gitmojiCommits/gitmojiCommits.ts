@@ -79,7 +79,7 @@ type Main = (p: {
     borderColorSetter?: terminal.BorderColorSetter;
   };
   question: {
-    subject?: {
+    subject: {
       validate: Validate;
     };
     body?: {
