@@ -11,11 +11,9 @@ import { colors } from "https://deno.land/x/cliffy@v0.25.0/ansi/colors.ts";
 
 class State {
   constructor(public template: string) {}
-  removeClosePrefix() {
-    this.template = this.template.replace(
-      / Close #_/,
-      "",
-    ).trim();
+
+  fixTemplateBody() {
+    this.template = this.template.replace(/BREAKING CHANGE: $/, "");
   }
 }
 
@@ -211,6 +209,7 @@ export const main: Main = async (p) => {
           answerVo,
         });
 
+        state.fixTemplateBody();
         await next();
       },
     },
