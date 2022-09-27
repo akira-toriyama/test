@@ -56,7 +56,12 @@ main({
       },
     },
     body: {
-      validate,
+      validate: (input) => {
+        if (input.length === 0) {
+          return Promise.resolve({ type: "valid" } as const);
+        }
+        return validate(input);
+      },
     },
   },
 })

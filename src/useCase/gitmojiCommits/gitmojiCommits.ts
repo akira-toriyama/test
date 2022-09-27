@@ -13,7 +13,7 @@ class State {
   constructor(public template: string) {}
 
   fixTemplateBody() {
-    this.template = this.template.replace(/BREAKING CHANGE: $/, "");
+    this.template = this.template.replace(/\r?\n{2,}/, "\n").trim();
   }
 }
 
