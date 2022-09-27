@@ -1,5 +1,3 @@
-version: v1
-
 labels:
   - label: "feat"
     matcher:
