@@ -4,11 +4,10 @@ import {
   Select,
   SelectOptions,
 } from "https://deno.land/x/cliffy@v0.25.0/prompt/mod.ts";
-import * as gitmoji from "../../externalInterface/gitmoji.ts";
 import * as gitHub from "../../externalInterface/gitHub.ts";
 import * as templateService from "../../service/template.ts";
 import * as terminal from "../../userInterface/terminal.ts";
-import * as validation from "../../service/validation.ts";
+import { colors } from "https://deno.land/x/cliffy@v0.25.0/ansi/colors.ts";
 
 class State {
   constructor(public template: string) {}
@@ -16,14 +15,10 @@ class State {
 type Initialize = (p: {
   userInterFace: {
     template: string;
-    targetHighlighter: templateService.TargetHighlighter;
-    borderColorSetter: terminal.BorderColorSetter;
+    targetHighlighter?: templateService.TargetHighlighter;
+    borderColorSetter?: terminal.BorderColorSetter;
   };
-}) => Promise<{
-  issues: never[] | {
-    name: string;
-    value: string;
-  }[];
+}) => {
   templateRender: (p: {
     value: string;
   }) => void;
@@ -32,46 +27,59 @@ type Initialize = (p: {
     name: string;
   }) => string;
   state: State;
-}>;
+};
 
-const initialize: Initialize = async (p) => {
-  terminal.spinner.start({ text: "initialize..." });
-  const [issues] = await Promise.all([
-    gitHub.fetchIssues(),
-  ]).finally(() => {
-    terminal.spinner.stop();
-  });
-
+const initialize: Initialize = (p) => {
   return {
-    issues,
     templateRender: terminal.createTemplateRender({
-      borderColorSetter: p.userInterFace.borderColorSetter,
+      borderColorSetter: p.userInterFace.borderColorSetter || colors.green.bold,
     }),
     prepareTemplate: templateService.prepareTemplate({
-      highlighter: p.userInterFace.targetHighlighter,
+      highlighter: p.userInterFace.targetHighlighter || colors.green.bgGreen,
     }),
     state: new State(p.userInterFace.template),
   };
 };
 
+type Validate = (
+  p: string,
+) => Promise<
+  | {
+    type: "valid";
+  }
+  | {
+    type: "error";
+    reason: unknown;
+  }
+>;
+
 type Main = (p: {
+  userInterFace: {
+    template: string;
+    targetHighlighter?: templateService.TargetHighlighter;
+    borderColorSetter?: terminal.BorderColorSetter;
+  };
   question: {
     type: {
       options: SelectOptions["options"];
     };
-    scope: {
+    scope?: {
       options: SelectOptions["options"];
     };
-  };
-  userInterFace: {
-    template: string;
-    targetHighlighter: templateService.TargetHighlighter;
-    borderColorSetter: terminal.BorderColorSetter;
+    subject?: {
+      validate: Validate;
+    };
+    body?: {
+      validate: Validate;
+    };
+    breakingChange?: {
+      validate: Validate;
+    };
   };
 }) => Promise<string>;
 
-export const main: Main = async (p) => {
-  const { issues, state, templateRender, prepareTemplate } = await initialize(
+export const main: Main = (p) => {
+  const { state, templateRender, prepareTemplate } = initialize(
     p,
   );
 
@@ -109,9 +117,14 @@ export const main: Main = async (p) => {
       name: "scope",
       message: "Select a scope.",
       type: Select,
-      options: p.question.scope.options,
+      options: p.question.scope?.options || [],
       search: true,
       before: async (answerVo, next) => {
+        if (p.question.scope === undefined) {
+          await next("subject");
+          return;
+        }
+
         state.template = templateService.templateFillIn({
           template: state.template,
           answerVo,
@@ -141,52 +154,19 @@ export const main: Main = async (p) => {
       },
     },
     {
-      name: "gitmoji",
-      message: "Select a gitmoji.",
-      type: Select,
-      options: gitmoji.getGitmojis(),
-      search: true,
-      before: async (answerVo, next) => {
-        state.template = templateService.templateFillIn({
-          template: state.template,
-          answerVo,
-        });
-
-        templateRender({
-          value: prepareTemplate({
-            template: state.template,
-            name: "gitmoji",
-          }),
-        });
-
-        await next();
-      },
-      after: async (answerVo, next) => {
-        state.template = templateService.templateFillIn({
-          template: state.template,
-          answerVo,
-        });
-        await next();
-      },
-    },
-    {
       name: "subject",
       message: "Enter subject.",
       type: Input,
       hint:
         "Surrounding it with an ` allows it. example: Add myFunc -> Add `myFunc`",
       validate: async (input) => {
-        terminal.spinner.start({ text: "Submitting..." });
+        if (p.question.subject?.validate === undefined) {
+          return true;
+        }
 
-        const r = await validation.validateGrammar({ input })
-          .catch((e) => {
-            console.error(e);
-            // it can't be helped
-            return { type: "valid" } as const;
-          })
-          .finally(() => {
-            terminal.spinner.stop();
-          });
+        terminal.spinner.start({ text: "Submitting..." });
+        const r = await p.question.subject?.validate(input)
+          .finally(() => terminal.spinner.stop());
 
         if (r.type === "valid") {
           return true;
@@ -229,46 +209,6 @@ export const main: Main = async (p) => {
           template: state.template,
           answerVo,
         });
-        await next();
-      },
-    },
-    {
-      name: "issue",
-      message: "Select a issue.",
-      type: Select,
-      options: [
-        { name: "Not selected", value: "_" },
-        terminal.separator,
-        ...issues,
-      ],
-      search: true,
-      before: async (answerVo, next) => {
-        state.template = templateService.templateFillIn({
-          template: state.template,
-          answerVo,
-        });
-
-        templateRender({
-          value: prepareTemplate({
-            template: state.template,
-            name: "issue",
-          }),
-        });
-
-        await next();
-      },
-      after: async (answerVo, next) => {
-        state.template = templateService.templateFillIn({
-          template: state.template,
-          answerVo,
-        });
-
-        // カスタム
-        state.template = state.template.replace(
-          / Close #_/,
-          "",
-        ).trim();
-
         await next();
       },
     },
