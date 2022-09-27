@@ -32,4 +32,4 @@ version-resolver:
 
 change-template: |
   - $TITLE @$AUTHOR (#$NUMBER)
-  $BODY
+  <pre>$BODY</pre>
