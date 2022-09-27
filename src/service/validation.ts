@@ -1,18 +1,22 @@
 import * as grammar from "../externalInterface/grammar.ts";
 import * as translator from "../service/translator.ts";
 
-export const validate = (input: string) => {
-  if (!input) {
+export const validateGrammar = (p: { input: string }) => {
+  if (!p.input) {
     return Promise.resolve(
       {
         type: "error",
-        reason: "Please input.",
+        reason: {
+          description: [{
+            en: "Please input.",
+          }],
+        },
       } as const,
     );
   }
 
   return grammar.grammarCheck({
-    txt: input,
+    txt: p.input,
     grammarAuthKey: Deno.env.get("GRAMMAR_API_KEY"),
   })
     .then(async (v) => {

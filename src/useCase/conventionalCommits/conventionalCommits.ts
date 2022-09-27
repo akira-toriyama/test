@@ -8,7 +8,6 @@ import * as gitmoji from "../../externalInterface/gitmoji.ts";
 import * as gitHub from "../../externalInterface/gitHub.ts";
 import * as templateService from "../../service/template.ts";
 import * as terminal from "../../userInterface/terminal.ts";
-import * as util from "./util.ts";
 import * as validation from "../../service/validation.ts";
 
 class State {
@@ -179,7 +178,7 @@ export const main: Main = async (p) => {
       validate: async (input) => {
         terminal.spinner.start({ text: "Submitting..." });
 
-        const r = await validation.validate(input)
+        const r = await validation.validateGrammar({ input })
           .catch((e) => {
             console.error(e);
             // it can't be helped
@@ -205,7 +204,7 @@ export const main: Main = async (p) => {
           }),
         });
 
-        console.error(util.subject.fmt(r.reason));
+        console.error(JSON.stringify(r.reason, null, 2));
 
         // error;
         return "";
