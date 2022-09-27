@@ -1,8 +1,7 @@
+```bash
+brew install gh
 git config --local core.hooksPath .githooks
-
-gh が必須
-
-https://deno.land/x/dnt@0.30.0
+```
 
 // TODO envは引数から https://textgears.com/api
 https://www.deepl.com/docs-api/translate-text/translate-text/
@@ -19,9 +18,3 @@ https://developer.mamezou-tech.com/deno/getting-started/02-use-external-packages
 https://deno.land/manual/typescript/configuration
 
 mod.ts x
-
--
-
--
--
--
