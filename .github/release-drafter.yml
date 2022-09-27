@@ -29,3 +29,5 @@ version-resolver:
   patch:
     labels:
       - 'x.x.o'
+
+change-template: '- $TITLE @$AUTHOR (#$NUMBER) $BODY'
