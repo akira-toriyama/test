@@ -10,7 +10,7 @@ template: |
   **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
 
 change-template: |
-  <details>
+  <details open>
   <summary>$TITLE @$AUTHOR (#$NUMBER)</summary>
 
   $BODY
