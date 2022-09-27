@@ -3,8 +3,9 @@ import { denoRun } from "./denoRun.ts";
 type IssuesStruct = Array<{ body: string; number: number; title: string }>;
 type FetchIssues = () => Promise<
   never[] | {
-    name: string;
-    value: string;
+    number: number;
+    title: string;
+    body: string;
   }[]
 >;
 /**
@@ -18,14 +19,8 @@ export const fetchIssues: FetchIssues = () =>
       return JSON.parse(v);
     }
     return [];
-  }).then((v) => (
-    v.map((vv) => ({
-      name: `#${vv.number}
-title: ${vv.title}
-body: ${vv.body}`,
-      value: `#${vv.number}`,
-    }))
-  )).catch((e) => {
-    console.error(e);
-    return [];
-  });
+  })
+    .catch((e) => {
+      console.error(e);
+      return [];
+    });

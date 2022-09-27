@@ -9,6 +9,14 @@ import * as terminal from "../../userInterface/terminal.ts";
 
 terminal.spinner.start({ text: "initialize..." });
 const issues = await gitHub.fetchIssues()
+  .then((v) => (
+    v.map((vv) => ({
+      name: `#${vv.number}
+   ${colors.green.bold("title:")} ${vv.title}
+   ${colors.green.bold("body:")} ${vv.body}`,
+      value: `#${vv.number}`,
+    }))
+  ))
   .then((r) =>
     r.map((v) => ({
       ...v,
@@ -17,7 +25,7 @@ const issues = await gitHub.fetchIssues()
   ).then((r) => {
     return [
       { name: "Not selected", value: "Not selected" },
-      { name: "-------------", value: "", disabled: true },
+      { name: "---------------------------------", value: "", disabled: true },
       ...r,
     ];
   })
