@@ -10,8 +10,10 @@ template: |
   **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
 
 change-template: |
-  $TITLE @$AUTHOR (#$NUMBER)
-  <pre>$BODY</pre>
+  <details>
+  <summary>$TITLE @$AUTHOR (#$NUMBER)</summary>
+  $BODY
+  </details>
 
 categories:
   - title: 'o.x.x'
