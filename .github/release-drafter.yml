@@ -9,15 +9,12 @@ categories:
   - title: 'o.x.x'
     labels:
       - 'o.x.x'
-
   - title: 'x.o.x'
     labels:
       - 'x.o.x'
-
   - title: 'x.x.o'
     labels:
       - 'x.x.o'
-      
   - title: 'x.x.x'
     labels:
       - 'x.x.x'
