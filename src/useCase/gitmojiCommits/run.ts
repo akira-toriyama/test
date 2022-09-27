@@ -17,7 +17,7 @@ const issues = await gitHub.fetchIssues()
   ).then((r) => {
     return [
       { name: "Not selected", value: "Not selected" },
-      { name: "-------------", value: "", disabled: true },
+      { name: "👇🏻👇🏻👇🏻👇🏻👇🏻👇🏻👇🏻", value: "", disabled: true },
       ...r,
     ];
   })
