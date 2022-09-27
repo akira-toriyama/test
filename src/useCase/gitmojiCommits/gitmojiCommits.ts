@@ -2,10 +2,7 @@ import {
   Input,
   prompt,
   Select,
-  SelectOptions,
 } from "https://deno.land/x/cliffy@v0.25.0/prompt/mod.ts";
-import * as gitHub from "../../externalInterface/gitHub.ts";
-import * as gitmoji from "../../externalInterface/gitmoji.ts";
 import * as templateService from "../../service/template.ts";
 import * as terminal from "../../userInterface/terminal.ts";
 import { colors } from "https://deno.land/x/cliffy@v0.25.0/ansi/colors.ts";
@@ -24,11 +21,7 @@ type Initialize = (p: {
     targetHighlighter?: templateService.TargetHighlighter;
     borderColorSetter?: terminal.BorderColorSetter;
   };
-}) => Promise<{
-  issues: never[] | {
-    name: string;
-    value: string;
-  }[];
+}) => {
   templateRender: (p: {
     value: string;
   }) => void;
@@ -37,27 +30,17 @@ type Initialize = (p: {
     name: string;
   }) => string;
   state: State;
-}>;
-
-const initialize: Initialize = async (p) => {
-  terminal.spinner.start({ text: "initialize..." });
-  const [issues] = await Promise.all([
-    gitHub.fetchIssues(),
-  ]).finally(() => {
-    terminal.spinner.stop();
-  });
-
-  return {
-    issues,
-    templateRender: terminal.createTemplateRender({
-      borderColorSetter: p.userInterFace.borderColorSetter || colors.green.bold,
-    }),
-    prepareTemplate: templateService.prepareTemplate({
-      highlighter: p.userInterFace.targetHighlighter || colors.green.bgGreen,
-    }),
-    state: new State(p.userInterFace.template),
-  };
 };
+
+const initialize: Initialize = (p) => ({
+  templateRender: terminal.createTemplateRender({
+    borderColorSetter: p.userInterFace.borderColorSetter || colors.green.bold,
+  }),
+  prepareTemplate: templateService.prepareTemplate({
+    highlighter: p.userInterFace.targetHighlighter || colors.green.bgGreen,
+  }),
+  state: new State(p.userInterFace.template),
+});
 
 export type Validate = (
   p: string,
@@ -83,6 +66,9 @@ type Main = (p: {
     };
     subject: {
       validate: Validate;
+    };
+    issues: {
+      options: Array<{ name: string; value: string; disabled?: boolean } | any>;
     };
     body?: {
       validate: Validate;
@@ -199,6 +185,43 @@ export const main: Main = async (p) => {
         afterFn({ answerVo });
         await next();
       },
+    },
+    {
+      name: "issue",
+      message: "Select a issue.",
+      type: Select,
+      options: p.question.issues.options,
+      search: true,
+      before: async (answerVo, next) => {
+        state.template = templateService.templateFillIn({
+          template: state.template,
+          answerVo,
+        });
+
+        templateRender({
+          value: prepareTemplate({
+            template: state.template,
+            name: "issue",
+          }),
+        });
+
+        await next();
+      },
+      after: async (answerVo, next) => {
+        state.template = templateService.templateFillIn({
+          template: state.template,
+          answerVo,
+        });
+
+        // カスタム
+        state.template = state.template.replace(
+          / Close #_/,
+          "",
+        ).trim();
+
+        await next();
+      },
+      transform: (v) => v === "Not selected" ? "" : v,
     },
     {
       name: "body",

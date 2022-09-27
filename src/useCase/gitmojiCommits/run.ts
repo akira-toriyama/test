@@ -4,6 +4,26 @@ import { colors } from "https://deno.land/x/cliffy@v0.25.0/ansi/colors.ts";
 import * as validation from "../../util/validation.ts";
 import * as translator from "../../util/translator.ts";
 import * as gitmojis from "../../util/gitmojis.ts";
+import * as gitHub from "../../externalInterface/gitHub.ts";
+import * as terminal from "../../userInterface/terminal.ts";
+
+terminal.spinner.start({ text: "initialize..." });
+const issues = await gitHub.fetchIssues()
+  .then((r) =>
+    r.map((v) => ({
+      ...v,
+      value: `Close #${v.value}`,
+    }))
+  ).then((r) => {
+    return [
+      { name: "Not selected", value: "Not selected" },
+      { name: "------------", value: "", disabled: true },
+      ...r,
+    ];
+  })
+  .finally(
+    terminal.spinner.stop,
+  );
 
 const validate: Validate = (input) => {
   return validation.validateGrammar({
@@ -43,7 +63,7 @@ main({
   userInterFace: {
     targetHighlighter: colors.bold.bgGreen,
     borderColorSetter: colors.green.bold,
-    template: `{{gitmoji}} {{subject}}
+    template: `{{gitmoji}} {{subject}} {{issue}}
   
 {{body}}`,
   },
@@ -58,6 +78,9 @@ main({
         }
         return validate(input);
       },
+    },
+    issues: {
+      options: issues,
     },
     body: {
       validate: (input) => {
