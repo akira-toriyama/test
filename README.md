@@ -18,3 +18,9 @@ https://developer.mamezou-tech.com/deno/getting-started/02-use-external-packages
 https://deno.land/manual/typescript/configuration
 
 mod.ts x
+
+deno run --unstable --allow-net --allow-env --allow-run --allow-write
+"https://deno.land/x/at_test@v1.2.1/useCase/conventionalCommits/run.ts"
+
+deno run --unstable --allow-net --allow-env --allow-run --allow-write
+"https://deno.land/x/at_test@v1.2.1/useCase/gitmojiCommits/run.ts"
