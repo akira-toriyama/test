@@ -30,6 +30,10 @@ categories:
     labels:
       - 'x.x.x'
 
+exclude-labels:
+  - 'x.x.x'
+  - '?.?.?'
+
 version-resolver:
   major:
     labels:

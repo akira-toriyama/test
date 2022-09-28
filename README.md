@@ -1,6 +1,5 @@
 ```bash
-brew install deno
-brew install gh
+brew install deno gh
 git config --local core.hooksPath .githooks
 ```
 
