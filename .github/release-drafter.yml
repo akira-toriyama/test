@@ -16,6 +16,11 @@ change-template: |
   $BODY
   </details>
 
+include-labels:
+  - 'o.x.x'
+  - 'x.o.x'
+  - 'x.x.o'
+
 categories:
   - title: 'o.x.x'
     labels:
@@ -29,10 +34,6 @@ categories:
   - title: 'x.x.x'
     labels:
       - 'x.x.x'
-
-exclude-labels:
-  - 'x.x.x'
-  - '?.?.?'
 
 version-resolver:
   major:
