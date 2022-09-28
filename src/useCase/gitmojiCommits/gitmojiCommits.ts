@@ -187,6 +187,7 @@ export const main: Main = async (p) => {
         afterFn({ answerVo });
         await next();
       },
+      transform: (v) => v.trim(),
     },
     {
       name: "issue",
@@ -240,6 +241,7 @@ export const main: Main = async (p) => {
         state.fixTemplateBody();
         await next();
       },
+      transform: (v) => v.trim(),
     },
   ]).then(() => state.template)
     .catch((e) => {
