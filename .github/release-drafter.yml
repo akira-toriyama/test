@@ -46,4 +46,3 @@ version-resolver:
   patch:
     labels:
       - 'x.x.o'
-  default: skip
