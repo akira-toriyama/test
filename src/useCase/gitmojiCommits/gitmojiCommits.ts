@@ -203,7 +203,6 @@ export const main: Main = async (p) => {
         });
         await next();
       },
-      transform: (v) => `*${v}*`,
     },
     {
       name: "subject",
