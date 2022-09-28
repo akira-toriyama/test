@@ -1,0 +1,20 @@
+{
+  "bump_files": [],
+  "base_branches": ["main"],
+  "categories": [
+    {
+      "labels": ["o.x.x"],
+      "semver_part": "major"
+    },
+    {
+      "labels": ["x.o.x"],
+      "semver_part": "minor"
+    },
+
+    {
+      "labels": ["x.x.o"],
+      "semver_part": "patch"
+    }
+  ],
+  "ignore_labels": ["x.x.x"]
+}

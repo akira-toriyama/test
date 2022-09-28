@@ -1,0 +1,6 @@
+- name: "Bump Version"
+  uses: marier-nico/pr-bump@1.0
+  with:
+    configuration: ".github/workflows/pr_bump_config.json"
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
