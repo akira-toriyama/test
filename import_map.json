@@ -1,6 +1,6 @@
 {
   "imports": {
-    "/": "/x/at_test/",
+    "/": "https://deno.land/x/at_test@v1.3.0/",
     "./": "./"
   }
 }
