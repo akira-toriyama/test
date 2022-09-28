@@ -7,8 +7,8 @@ on:
 
 jobs:
   update_release_draft:
-    if: github.event.label.name != 'x.x.x'
-
+    # if: github.event.label.name != 'x.x.x'
+    if: github.repository == 'octo-org/octo-repo-prod'
     runs-on: ubuntu-latest
     steps:
       - uses: release-drafter/release-drafter@v5
