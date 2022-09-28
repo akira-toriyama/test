@@ -22,7 +22,3 @@
 
 // ng
 // deno run --unstable --allow-net --allow-env --allow-run --allow-write "https://deno.land/x/at_test@v1.3.3/src/useCase/gitmojiCommits/run.ts"
-
-// ok
-// deno run --unstable --allow-net --allow-env --allow-run --allow-write ./a.ts
-// import "https://deno.land/x/at_test@v1.3.3/src/useCase/gitmojiCommits/run.ts?doc";
