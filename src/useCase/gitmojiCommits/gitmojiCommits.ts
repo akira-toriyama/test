@@ -66,6 +66,9 @@ type Main = (p: {
     gitmoji: {
       options: { name: string; value: string }[];
     };
+    scope: {
+      options: { name: string; value: string }[];
+    };
     subject: {
       validate: Validate;
     };
@@ -171,6 +174,36 @@ export const main: Main = async (p) => {
         });
         await next();
       },
+    },
+    {
+      name: "scope",
+      message: "Select a scope.",
+      type: Select,
+      options: p.question.scope.options,
+      search: true,
+      before: async (answerVo, next) => {
+        state.template = templateService.templateFillIn({
+          template: state.template,
+          answerVo,
+        });
+
+        templateRender({
+          value: prepareTemplate({
+            template: state.template,
+            name: "scope",
+          }),
+        });
+
+        await next();
+      },
+      after: async (answerVo, next) => {
+        state.template = templateService.templateFillIn({
+          template: state.template,
+          answerVo,
+        });
+        await next();
+      },
+      transform: (v) => `___${v}___`,
     },
     {
       name: "subject",
