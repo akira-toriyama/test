@@ -35,13 +35,6 @@ jobs:
           current_version: ${{ steps.get-latest-tag.outputs.tag }}
           level: ${{ steps.release-label.outputs.level }}
 
-      - uses: actions-ecosystem/action-regex-match@v2
-        id: regex-match
-        if: ${{ steps.bump-semver.outputs.new_version != null }}
-        with:
-          text: ${{ steps.get-merged-pull-request.outputs.body }}
-          regex: '```release_note([\s\S]*)```'
-
       - uses: actions-ecosystem/action-push-tag@v1
         if: ${{ steps.bump-semver.outputs.new_version != null }}
         with:
