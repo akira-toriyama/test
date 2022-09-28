@@ -17,9 +17,8 @@
 //   .action((options, ...args) => {})
 //   .parse(Deno.args);
 
-// deno run --import-map="import_map.json"  --unstable --allow-net --allow-env --allow-run --allow-write "https://deno.land/x/at_test@v1.3.0/src/useCase/gitmojiCommits/gitmojiCommits.ts"
-// deno run --unstable --allow-net --allow-env --allow-run --allow-write "https://deno.land/x/at_test@v1.3.2/src/useCase/gitmojiCommits/gitmojiCommits.ts"
+// ok
+// deno run --import-map="https://deno.land/x/at_test@v1.3.3/import_map.json?source"  --unstable --allow-net --allow-env --allow-run --allow-write "https://deno.land/x/at_test@v1.3.3/src/useCase/gitmojiCommits/run.ts"
 
-// deno run  --import-map="import_map.json" --unstable --allow-net --allow-env --allow-run --allow-write "https://deno.land/x/at_test@v1.3.1/src/useCase/gitmojiCommits/gitmojiCommits.ts"
-
-// import "https://deno.land/x/at_test@v1.3.2/src/useCase/gitmojiCommits/run.ts";
+// ng
+// deno run --unstable --allow-net --allow-env --allow-run --allow-write "https://deno.land/x/at_test@v1.3.3/src/useCase/gitmojiCommits/run.ts"
