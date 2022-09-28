@@ -71,7 +71,7 @@ main({
   userInterFace: {
     targetHighlighter: colors.bold.bgGreen,
     borderColorSetter: colors.green.bold,
-    template: `{{gitmoji}}[{{scope}}]: {{subject}} {{issue}}
+    template: `{{gitmoji}}({{scope}}): {{subject}} {{issue}}
   
 {{body}}`,
   },
