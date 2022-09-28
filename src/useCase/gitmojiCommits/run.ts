@@ -71,13 +71,23 @@ main({
   userInterFace: {
     targetHighlighter: colors.bold.bgGreen,
     borderColorSetter: colors.green.bold,
-    template: `{{gitmoji}} {{subject}} {{issue}}
+    template: `{{gitmoji}}[{{scope}}]: {{subject}} {{issue}}
   
 {{body}}`,
   },
   question: {
     gitmoji: {
       options: gitmojis.gitmojis,
+    },
+    scope: {
+      options: [
+        { name: "externalInterface", value: "externalInterface" },
+        { name: "service", value: "service" },
+        { name: "useCase", value: "useCase" },
+        { name: "userInterface", value: "userInterface" },
+        { name: "util", value: "util" },
+        { name: "other", value: "other" },
+      ],
     },
     subject: {
       validate: (input) => {

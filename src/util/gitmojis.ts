@@ -27,5 +27,5 @@ export const gitmojis = gitmoji.getGitmojis()
   }))
   .map((v) => ({
     name: `${v.emoji}(${v.semver.replaceAll(".", "")}): ${v.description}`,
-    value: `${v.code}(${v.semver}):`,
+    value: `${v.code}(${v.semver})`,
   }));
