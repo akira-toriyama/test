@@ -7,14 +7,15 @@ jobs:
   xxx_yyy:
     runs-on: ubuntu-latest
     steps:
-            
-      - uses: actions/checkout@v2
       
+      - name: aaa
+        uses: actions/checkout@v2
       
-      - uses: actions-ecosystem/action-get-merged-pull-request@v1
-        id: get-merged-pull-request
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: aaa
+        uses: actions-ecosystem/action-get-merged-pull-request@v1
+          id: get-merged-pull-request
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
 
 
       - name: my-stepB
