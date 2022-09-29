@@ -13,6 +13,3 @@ labels:
   - label: "o.x.x"
     matcher:
       commits: ":\\[o.x.x\\]: .*"
-  - label: "?.?.?"
-    matcher:
-      commits: ":\\[?.?.?\\]: .*"
