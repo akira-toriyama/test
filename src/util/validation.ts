@@ -1,4 +1,4 @@
-import * as grammar from "/src/externalInterface/grammar.ts";
+import * as grammar from "~/src/externalInterface/grammar.ts";
 
 export const validateGrammar = (p: { input: string; grammarAuthKey: string }) =>
   grammar.grammarCheck({

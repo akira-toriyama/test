@@ -19,26 +19,9 @@ https://deno.land/manual/typescript/configuration
 
 mod.ts x
 
-deno run --unstable --allow-net --allow-env --allow-run --allow-write
-"https://deno.land/x/at_test@v1.2.1/useCase/conventionalCommits/run.ts"
+deno run
+--import-map="https://deno.land/x/at_test@v3.0.12/import_map.json?source"
+--unstable --allow-net --allow-env --allow-run --allow-write
+"https://deno.land/x/at_test@v3.0.12~/src/useCase/gitmojiCommits/run.ts"
 
-deno run --unstable --allow-net --allow-env --allow-run --allow-write
-"https://deno.land/x/at_test@v1.2.1/useCase/gitmojiCommits/run.ts"
-
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
+<!-- deno run --import-map="https://deno.land/x/at_test@v3.0.12/import_map.json?source"  --unstable --allow-net --allow-env --allow-run --allow-write "https://deno.land/x/at_test@v3.0.12~/src/useCase/gitmojiCommits/run.ts" -->
