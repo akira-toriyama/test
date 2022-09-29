@@ -20,7 +20,13 @@ jobs:
 
 
       - name: my-stepB
-        if: steps.get-merged-pull-request.outputs.labels != 'piyo'
+        if: steps.get-merged-pull-request.outputs.labels != 'piyo' && steps.get-merged-pull-request.outputs.labels != ''
         run: |
           echo "Hello World!"
           echo '${{ toJSON(steps.get-merged-pull-request.outputs) }}'
+
+
+# label が foo する
+# label が piyo しない
+# label が piyo, foo する
+# label が 空 しない
