@@ -1,10 +1,10 @@
 import { colors } from "https://deno.land/x/cliffy@v0.25.0/ansi/colors.ts";
-import * as git from "/src/externalInterface/git.ts";
-import * as validation from "/src/util/validation.ts";
-import * as translator from "/src/util/translator.ts";
-import * as gitmojis from "/src/util/gitmojis.ts";
-import * as gitHub from "/src/externalInterface/gitHub.ts";
-import * as terminal from "/src/userInterface/terminal.ts";
+import * as git from "../../externalInterface/git.ts";
+import * as validation from "../../util/validation.ts";
+import * as translator from "../../util/translator.ts";
+import * as gitmojis from "../../util/gitmojis.ts";
+import * as gitHub from "../../externalInterface/gitHub.ts";
+import * as terminal from "../../userInterface/terminal.ts";
 import { main, Validate } from "./gitmojiCommits.ts";
 
 terminal.spinner.start({ text: "initialize..." });
