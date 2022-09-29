@@ -23,4 +23,4 @@ jobs:
         # if: steps.get-merged-pull-request.outputs.labels == 'piyo'
         run: |
           echo "Hello World!"
-          run: echo '${{ toJSON(steps.get-merged-pull-request.outputs) }}'
+          echo '${{ toJSON(steps.get-merged-pull-request.outputs) }}'
