@@ -23,5 +23,3 @@ import_map どうにか問題
 
 <!-- o -->
 <!-- deno run --unstable --allow-net --allow-env --allow-run --allow-write "https://deno.land/x/at_test@v7.0.0/src/useCase/gitmojiCommits/run.ts" -->
-
--
