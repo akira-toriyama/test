@@ -4,7 +4,7 @@ on:
       - main
   pull_request:
     types: [opened, reopened, synchronize]
-    
+
 jobs:
   update_release_draft:
     runs-on: ubuntu-latest
@@ -24,3 +24,8 @@ jobs:
       - name: my-step4
         if: github.event.label.name != 'piyo'
         run: echo "Hello World!"
+
+      - name: my-step5
+        run: |
+          echo "Hello World!"
+          echo '${{ toJSON(github) }}'
