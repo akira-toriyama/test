@@ -7,10 +7,18 @@ jobs:
   update_release_draft:
     runs-on: ubuntu-latest
     steps:
-      - name: my-step1
-        if: github.actor != 'dependabot[bot]'
+      # - name: my-step1
+      #   if: github.actor != 'dependabot[bot]'
+      #   run: echo "Hello World!"
+
+      # - name: my-step2
+      #   if: github.actor == 'dependabot[bot]'
+      #   run: echo "Hello World!"
+
+      - name: my-step3
+        if: github.event.label.name == 'piyo'
         run: echo "Hello World!"
 
-      - name: my-step2
-        if: github.actor == 'dependabot[bot]'
+      - name: my-step4
+        if: github.event.label.name != 'piyo'
         run: echo "Hello World!"
