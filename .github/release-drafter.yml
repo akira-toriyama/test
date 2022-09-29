@@ -16,6 +16,12 @@ change-template: |
   $BODY
   </details>
 
+include-labels:
+  - 'o.x.x'
+  - 'x.o.x'
+  - 'x.x.o'
+  - 'x.x.x'
+
 categories:
   - title: 'o.x.x'
     labels:
