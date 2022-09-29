@@ -17,7 +17,7 @@ const findSemver = (p: string | null) => {
     return "o.x.x";
   }
 
-  return "?.?.?";
+  return "_._._";
 };
 
 export const gitmojis = gitmoji.getGitmojis()
