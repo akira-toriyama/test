@@ -16,10 +16,9 @@ jobs:
 
       - name: my-stepA
         run: |
-          echo "Hello World!"
-      
-      - name: my-step5
-        run: |
           echo '${{ toJSON(steps.get-merged-pull-request.outputs) }}'
 
-        
+      - name: my-stepB
+        if: steps.get-merged-pull-request.outputs.labels === 'piyo'
+        run: |
+          echo "Hello World!"
