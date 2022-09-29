@@ -13,9 +13,9 @@ jobs:
       
       - name: bbb
         uses: actions-ecosystem/action-get-merged-pull-request@v1
-          id: get-merged-pull-request
-          with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
+        id: get-merged-pull-request
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       
       # - uses: actions-ecosystem/action-get-merged-pull-request@v1
