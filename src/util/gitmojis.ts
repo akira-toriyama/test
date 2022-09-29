@@ -1,4 +1,4 @@
-import * as gitmoji from "/src/externalInterface/gitmoji.ts";
+import * as gitmoji from "../externalInterface/gitmoji.ts";
 
 const findSemver = (p: string | null) => {
   if (p === null) {
