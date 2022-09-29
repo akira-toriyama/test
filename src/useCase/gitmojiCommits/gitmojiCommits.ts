@@ -4,8 +4,8 @@ import {
   Select,
 } from "https://deno.land/x/cliffy@v0.25.0/prompt/mod.ts";
 import { colors } from "https://deno.land/x/cliffy@v0.25.0/ansi/colors.ts";
-import * as templateService from "~/src/service/template.ts";
-import * as terminal from "~/src/userInterface/terminal.ts";
+import * as templateService from "/src/service/template.ts";
+import * as terminal from "/src/userInterface/terminal.ts";
 
 class State {
   constructor(public template: string) {}

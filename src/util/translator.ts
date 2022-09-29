@@ -1,4 +1,4 @@
-import * as translator from "~/src/externalInterface/translator.ts";
+import * as translator from "/src/externalInterface/translator.ts";
 
 type Translate = (p: {
   messages: Array<{
