@@ -79,7 +79,7 @@ main({
     borderColorSetter: colors.green.bold,
     template: `{{gitmoji}}: {{subject}} {{issue}}
     
-  {{body}}`,
+{{body}}`,
   },
   question: {
     gitmoji: {
