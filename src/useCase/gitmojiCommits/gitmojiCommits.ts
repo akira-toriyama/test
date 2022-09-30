@@ -117,7 +117,9 @@ export const main: Main = async (p) => {
     return "";
   };
 
-  const beforeFn = (pp: { answerVo: Record<string, string | undefined> }) => {
+  const beforeFn = (
+    pp: { answerVo: Record<string, string | undefined>; name: string },
+  ) => {
     state.template = templateService.templateFillIn({
       template: state.template,
       answerVo: pp.answerVo,
@@ -126,7 +128,7 @@ export const main: Main = async (p) => {
     templateRender({
       value: prepareTemplate({
         template: state.template,
-        name: "subject",
+        name: pp.name,
       }),
     });
   };
@@ -176,7 +178,7 @@ export const main: Main = async (p) => {
         "Surrounding it with an ` allows it. example: Add myFunc -> Add `myFunc`",
       validate: (input) => validate({ input, name: "subject" }),
       before: async (answerVo, next) => {
-        beforeFn({ answerVo });
+        beforeFn({ answerVo, name: "subject" });
         await next();
       },
       after: async (answerVo, next) => {
@@ -229,7 +231,7 @@ export const main: Main = async (p) => {
         "Surrounding it with an ` allows it. example: Add myFunc -> Add `myFunc`",
       validate: (input) => validate({ input, name: "body" }),
       before: async (answerVo, next) => {
-        beforeFn({ answerVo });
+        beforeFn({ answerVo, name: "body" });
         await next();
       },
       after: async (answerVo, next) => {
