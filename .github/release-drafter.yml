@@ -9,13 +9,6 @@ template: |
 
   **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
 
-change-template: |
-  <details open>
-  <summary>$TITLE @$AUTHOR (#$NUMBER)</summary>
-
-  $BODY
-  </details>
-
 include-labels:
   - 'o.x.x'
   - 'x.o.x'
