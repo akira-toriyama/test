@@ -2,10 +2,10 @@ import { notify } from "./notification.ts";
 
 type MakeUrl = (p: {
   txt: string;
-  grammarAuthKey: string;
+  grammarApiKey: string;
 }) => string;
 const makeUrl: MakeUrl = (p) =>
-  `https://api.textgears.com/grammar?key=${p.grammarAuthKey}&text=${
+  `https://api.textgears.com/grammar?key=${p.grammarApiKey}&text=${
     encodeURI(p.txt)
   }`;
 
@@ -30,7 +30,7 @@ type GrammarCheckResponse = null | {
 };
 type GrammarCheck = (p: {
   txt: string;
-  grammarAuthKey: string;
+  grammarApiKey: string;
 }) => Promise<
   void | {
     description: {

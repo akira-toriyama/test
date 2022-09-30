@@ -7,8 +7,8 @@ type Translate = (p: {
     };
   }>;
   translate: {
-    targetLang: string;
-    authKey: string;
+    deeplTargetLang: string;
+    deeplAuthKey: string;
   };
 }) => Promise<{
   description: {
@@ -21,8 +21,8 @@ export const translate: Translate = async (p) => {
     p.messages.map((e) =>
       translator.translate({
         txt: e.description.en,
-        targetLang: p.translate.targetLang,
-        translateAuthKey: p.translate.authKey,
+        deeplTargetLang: p.translate.deeplTargetLang,
+        translateAuthKey: p.translate.deeplAuthKey,
       })
     ),
   );
@@ -31,7 +31,7 @@ export const translate: Translate = async (p) => {
     ...e,
     description: {
       ...e.description,
-      [p.translate?.targetLang]: translatedTxt.at(i),
+      [p.translate?.deeplTargetLang]: translatedTxt.at(i),
     },
   }));
 };

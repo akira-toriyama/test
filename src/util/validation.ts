@@ -1,9 +1,9 @@
 import * as grammar from "../externalInterface/grammar.ts";
 
-export const validateGrammar = (p: { input: string; grammarAuthKey: string }) =>
+export const validateGrammar = (p: { input: string; grammarApiKey: string }) =>
   grammar.grammarCheck({
     txt: p.input,
-    grammarAuthKey: p.grammarAuthKey,
+    grammarApiKey: p.grammarApiKey,
   })
     .then((r) => {
       if (!r) {

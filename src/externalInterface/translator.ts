@@ -2,12 +2,12 @@ import { notify } from "./notification.ts";
 
 type MakeUrl = (p: {
   txt: string;
-  targetLang: string;
+  deeplTargetLang: string;
 }) => string;
 const makeUrl: MakeUrl = (p) =>
   `https://api-free.deepl.com/v2/translate?text=${
     encodeURI(p.txt)
-  }&target_lang=${p.targetLang}`;
+  }&target_lang=${p.deeplTargetLang}`;
 
 type TranslateResponse =
   | null
@@ -20,7 +20,7 @@ type TranslateResponse =
 
 type Translate = (p: {
   txt: string;
-  targetLang: string;
+  deeplTargetLang: string;
   translateAuthKey: string;
 }) => Promise<string | void | undefined>;
 /**

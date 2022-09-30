@@ -9,6 +9,13 @@ import { main, Validate } from "./gitmojiCommits.ts";
 import { notify } from "../../externalInterface/notification.ts";
 
 terminal.spinner.start({ text: "initialize..." });
+
+const env = {
+  grammarApiKey: Deno.env.get("GRAMMAR_API_KEY"),
+  deeplTargetLang: Deno.env.get("DEEPL_TARGET_LANG"),
+  deeplAuthKey: Deno.env.get("DEEPL_AUTH_KEY"),
+} as const;
+
 const issues = await gitHub.fetchIssues()
   .then((v) => (
     v.map((vv) => ({
@@ -23,25 +30,23 @@ const issues = await gitHub.fetchIssues()
       ...v,
       value: `Close ${v.value}`,
     }))
-  ).then((r) => {
-    return [
-      { name: "Not selected", value: "Not selected" },
-      {
-        name: "---------------------------------",
-        value: "",
-        disabled: true,
-      },
-      ...r,
-    ];
-  })
+  ).then((r) => [
+    { name: "Not selected", value: "Not selected" },
+    {
+      name: "---------------------------------",
+      value: "",
+      disabled: true,
+    },
+    ...r,
+  ])
   .finally(
     terminal.spinner.stop,
   );
 
-const validate: Validate = (input) => {
-  return validation.validateGrammar({
+const validate: Validate = (input) =>
+  validation.validateGrammar({
     input,
-    grammarAuthKey: Deno.env.get("GRAMMAR_API_KEY"),
+    grammarApiKey: env.grammarApiKey,
   })
     .then(async (r) => {
       if (r.type === "valid") {
@@ -51,8 +56,8 @@ const validate: Validate = (input) => {
       const translated = await translator.translate({
         messages: r.reason,
         translate: {
-          targetLang: Deno.env.get("DEEPL_TARGET_LANG"),
-          authKey: Deno.env.get("DEEPL_AUTH_KEY"),
+          deeplTargetLang: env.deeplTargetLang,
+          deeplAuthKey: env.deeplAuthKey,
         },
       });
 
@@ -71,7 +76,6 @@ const validate: Validate = (input) => {
       // It can't be helped
       return { type: "valid" } as const;
     });
-};
 
 main({
   userInterFace: {
