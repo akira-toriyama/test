@@ -1,6 +1,7 @@
 ```bash
 brew install deno gh
 git config --local core.hooksPath .githooks
+brew install terminal-notifier
 ```
 
 // TODO envは引数から https://textgears.com/api
@@ -10,6 +11,8 @@ https://www.deepl.com/docs-api/translate-text/translate-text/
 - ジドウアプデ
 
 TPLのロード https://github.com/c4spar/deno-cliffy/issues/447
+
+notify({ message: e });
 
 ---
 
@@ -24,4 +27,5 @@ import_map どうにか問題
 <!-- o -->
 <!-- deno run --unstable --allow-net --allow-env --allow-run --allow-write "https://deno.land/x/at_test@v7.0.0/src/useCase/gitmojiCommits/run.ts" -->
 
+-
 -

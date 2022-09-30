@@ -1,3 +1,5 @@
+import { notify } from "./notification.ts";
+
 type MakeUrl = (p: {
   txt: string;
   grammarAuthKey: string;
@@ -50,7 +52,12 @@ export const grammarCheck: GrammarCheck = (p) =>
         return [];
       }
 
+      if (!v.status) {
+        return Promise.reject(new Error(JSON.stringify(v)));
+      }
+
       const allowTexts = p.txt.match(/`(.*?)`/g) || [];
+
       return v.response.errors
         .map((vv) => ({
           description: {
@@ -61,4 +68,7 @@ export const grammarCheck: GrammarCheck = (p) =>
         }))
         .filter((o) => !allowTexts.some((txt) => txt === `\`${o.bad}\``)) || [];
     })
-    .catch(console.error);
+    .catch((e) => {
+      notify({ title: "grammarCheck error", message: e });
+      console.error(e);
+    });
