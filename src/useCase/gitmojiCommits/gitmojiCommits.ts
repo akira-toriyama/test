@@ -1,9 +1,4 @@
-import {
-  Input,
-  prompt,
-  Select,
-} from "https://deno.land/x/cliffy@v0.25.0/prompt/mod.ts";
-import { colors } from "https://deno.land/x/cliffy@v0.25.0/ansi/colors.ts";
+import { colors, prompt } from "../../deps.ts";
 import * as templateService from "../../service/template.ts";
 import * as terminal from "../../userInterface/terminal.ts";
 import { notify } from "../../externalInterface/notification.ts";
@@ -143,11 +138,11 @@ export const main: Main = async (p) => {
     });
   };
 
-  return prompt([
+  return prompt.prompt([
     {
       name: "gitmoji",
       message: "Select a gitmoji.",
-      type: Select,
+      type: prompt.Select,
       options: p.question.gitmoji.options,
       search: true,
       before: async (answerVo, next) => {
@@ -176,7 +171,7 @@ export const main: Main = async (p) => {
     {
       name: "subject",
       message: "Enter subject.",
-      type: Input,
+      type: prompt.Input,
       hint:
         "Surrounding it with an ` allows it. example: Add myFunc -> Add `myFunc`",
       validate: (input) => validate({ input, name: "subject" }),
@@ -193,7 +188,7 @@ export const main: Main = async (p) => {
     {
       name: "issue",
       message: "Select a issue.",
-      type: Select,
+      type: prompt.Select,
       options: p.question.issues.options,
       search: true,
       before: async (answerVo, next) => {
@@ -229,7 +224,7 @@ export const main: Main = async (p) => {
     {
       name: "body",
       message: "Enter body.",
-      type: Input,
+      type: prompt.Input,
       hint:
         "Surrounding it with an ` allows it. example: Add myFunc -> Add `myFunc`",
       validate: (input) => validate({ input, name: "body" }),

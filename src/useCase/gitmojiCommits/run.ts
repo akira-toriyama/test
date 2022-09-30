@@ -1,4 +1,4 @@
-import { colors } from "https://deno.land/x/cliffy@v0.25.0/ansi/colors.ts";
+import { colors } from "../../deps.ts";
 import * as git from "../../externalInterface/git.ts";
 import * as validation from "../../util/validation.ts";
 import * as translator from "../../util/translator.ts";

@@ -1,6 +1,4 @@
-import { Table } from "https://deno.land/x/cliffy@v0.25.0/table/mod.ts";
-import { Select } from "https://deno.land/x/cliffy@v0.25.0/prompt/mod.ts";
-import { wait } from "https://deno.land/x/wait@0.1.12/mod.ts";
+import { Table, wait } from "../deps.ts";
 
 export type BorderColorSetter = (p: string) => string;
 
@@ -48,7 +46,3 @@ export const spinner = {
   },
   stop: () => _spinner.stop(),
 } as const;
-
-export const separator = Select.separator(
-  "------------------------",
-);

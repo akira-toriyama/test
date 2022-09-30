@@ -1,8 +1,9 @@
-import { join } from "https://deno.land/std@0.157.0/path/mod.ts";
+import { path } from "../deps.ts";
 import { notify } from "./notification.ts";
 
-const commitEditMsgPath = join(".git", "COMMIT_EDITMSG");
+const commitEditMsgPath = path.join(".git", "COMMIT_EDITMSG");
 type SetCommitMessage = (p: { message: string }) => Promise<void>;
+
 /**
  * Set a Message for `./.git/COMMIT_EDITMSG`.
  */
