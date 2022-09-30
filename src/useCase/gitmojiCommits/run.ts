@@ -13,8 +13,8 @@ const issues = await gitHub.fetchIssues()
   .then((v) => (
     v.map((vv) => ({
       name: `#${vv.number}
-   ${colors.green.bold("title:")} ${vv.title}
-   ${colors.green.bold("body:")} ${vv.body}`,
+     ${colors.green.bold("title:")} ${vv.title}
+     ${colors.green.bold("body:")} ${vv.body}`,
       value: `#${vv.number}`,
     }))
   ))
@@ -26,7 +26,11 @@ const issues = await gitHub.fetchIssues()
   ).then((r) => {
     return [
       { name: "Not selected", value: "Not selected" },
-      { name: "---------------------------------", value: "", disabled: true },
+      {
+        name: "---------------------------------",
+        value: "",
+        disabled: true,
+      },
       ...r,
     ];
   })
@@ -74,8 +78,8 @@ main({
     targetHighlighter: colors.bold.bgGreen,
     borderColorSetter: colors.green.bold,
     template: `{{gitmoji}}: {{subject}} {{issue}}
-  
-{{body}}`,
+    
+  {{body}}`,
   },
   question: {
     gitmoji: {
@@ -84,7 +88,9 @@ main({
     subject: {
       validate: (input) => {
         if (input.length === 0) {
-          return Promise.resolve({ type: "error", reason: "🖕🖕🖕🖕🖕" } as const);
+          return Promise.resolve(
+            { type: "error", reason: "Please enter" } as const,
+          );
         }
         return validate(input);
       },

@@ -6,14 +6,10 @@ git config --local core.hooksPath .githooks
 // TODO envは引数から https://textgears.com/api
 https://www.deepl.com/docs-api/translate-text/translate-text/
 
-- test
-- ジドウアプデ
-- mod.ts
-- deps.ts
-
 TPLのロード https://github.com/c4spar/deno-cliffy/issues/447
 
-notify({ title: "grammarCheck error", message: e });
+- test
+- ジドウアプデ
 
 ---
 
