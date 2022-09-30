@@ -133,10 +133,19 @@ export const main: Main = async (p) => {
     });
   };
 
-  const afterFn = (pp: { answerVo: Record<string, string | undefined> }) => {
+  const afterFn = (
+    pp: { answerVo: Record<string, string | undefined>; name: string },
+  ) => {
     state.template = templateService.templateFillIn({
       template: state.template,
       answerVo: pp.answerVo,
+    });
+
+    templateRender({
+      value: prepareTemplate({
+        template: state.template,
+        name: pp.name,
+      }),
     });
   };
 
@@ -182,7 +191,7 @@ export const main: Main = async (p) => {
         await next();
       },
       after: async (answerVo, next) => {
-        afterFn({ answerVo });
+        afterFn({ answerVo, name: "body" });
         await next();
       },
       transform: (v) => v.trim(),
@@ -235,7 +244,7 @@ export const main: Main = async (p) => {
         await next();
       },
       after: async (answerVo, next) => {
-        afterFn({ answerVo });
+        afterFn({ answerVo, name: "body" });
         state.fixTemplateBody();
         await next();
       },
