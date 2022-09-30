@@ -1,3 +1,5 @@
+import { notify } from "./notification.ts";
+
 type MakeUrl = (p: {
   txt: string;
   targetLang: string;
@@ -33,4 +35,7 @@ export const translate: Translate = (p) =>
   })
     .then<TranslateResponse>((v) => v.ok ? v.json() : null)
     .then((v) => v?.translations.at(0)?.text)
-    .catch(console.error);
+    .catch((e) => {
+      notify({ title: "setCommitMessage", message: e });
+      console.error(e);
+    });

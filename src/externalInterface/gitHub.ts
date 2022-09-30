@@ -1,4 +1,5 @@
 import { denoRun } from "./denoRun.ts";
+import { notify } from "./notification.ts";
 
 type IssuesStruct = Array<{ body: string; number: number; title: string }>;
 type FetchIssues = () => Promise<
@@ -21,6 +22,7 @@ export const fetchIssues: FetchIssues = () =>
     return [];
   })
     .catch((e) => {
+      notify({ title: "fetchIssues", message: e });
       console.error(e);
       return [];
     });

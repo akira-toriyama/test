@@ -6,6 +6,7 @@ import * as gitmojis from "../../util/gitmojis.ts";
 import * as gitHub from "../../externalInterface/gitHub.ts";
 import * as terminal from "../../userInterface/terminal.ts";
 import { main, Validate } from "./gitmojiCommits.ts";
+import { notify } from "../../externalInterface/notification.ts";
 
 terminal.spinner.start({ text: "initialize..." });
 const issues = await gitHub.fetchIssues()
@@ -61,6 +62,7 @@ const validate: Validate = (input) => {
       } as const;
     })
     .catch((e) => {
+      notify({ title: "validate", message: e });
       console.error(e);
       // It can't be helped
       return { type: "valid" } as const;
@@ -101,4 +103,7 @@ main({
   },
 })
   .then((v) => git.setCommitMessage({ message: v }))
-  .catch(console.error);
+  .catch((e) => {
+    notify({ title: "run", message: e });
+    console.log(e);
+  });

@@ -6,6 +6,7 @@ import {
 import { colors } from "https://deno.land/x/cliffy@v0.25.0/ansi/colors.ts";
 import * as templateService from "../../service/template.ts";
 import * as terminal from "../../userInterface/terminal.ts";
+import { notify } from "../../externalInterface/notification.ts";
 
 class State {
   constructor(public template: string) {}
@@ -245,6 +246,7 @@ export const main: Main = async (p) => {
     },
   ]).then(() => state.template)
     .catch((e) => {
+      notify({ title: "gitmojiCommits", message: e });
       console.error(e);
       return "";
     });
