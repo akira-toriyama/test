@@ -1,3 +1,7 @@
+// bbb
+// bbb
+// bbb
+
 import {
   Command,
   EnumType,
@@ -16,3 +20,7 @@ await new Command()
   .arguments("<input:string> [output:string]")
   .action((options, ...args) => {})
   .parse(Deno.args);
+
+// aaa
+// aaa
+// aaa
