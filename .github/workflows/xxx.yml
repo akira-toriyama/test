@@ -3,16 +3,18 @@ on:
     branches:
       - main
   pull_request:
-    types: [opened]
+    types: [opened, reopened, synchronize]
 
 jobs:
-  create_comment:
+  update_release_draft:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-ecosystem/action-create-comment@v1
-        # if: ${{ startsWith(github.event.comment.body, '/hello') }}
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: comment
+        uses: actions-ecosystem/action-create-comment@v1
         with:
           github_token: ${{ secrets.github_token }}
           body: |
-            Hello, 
+            Foo
