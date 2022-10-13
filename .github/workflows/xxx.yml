@@ -16,6 +16,5 @@ jobs:
         uses: actions-ecosystem/action-create-comment@v1
         with:
           github_token: ${{ secrets.github_token }}
-          number: ${{ github.event.pull_request.number }}
           body: |
             Foo
