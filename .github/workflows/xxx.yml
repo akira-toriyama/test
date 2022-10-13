@@ -16,10 +16,12 @@ jobs:
         id: changed-files-specific
         uses: tj-actions/changed-files@v32
 
+      - name: ny
+        run: echo '${{ toJSON(steps.changed-files-specific.outputs) }}'
+
       - name: comment
         uses: actions-ecosystem/action-create-comment@v1
         with:
           github_token: ${{ secrets.github_token }}
           body: |
             @${{ github.actor }}
-        run: echo '${{ toJSON(steps.changed-files-specific.outputs) }}'
