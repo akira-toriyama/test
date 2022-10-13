@@ -18,10 +18,8 @@ jobs:
 
       - name: comment
         uses: actions-ecosystem/action-create-comment@v1
-
-        run: echo '${{ toJSON(steps.changed-files-specific.outputs) }}'
-
         with:
           github_token: ${{ secrets.github_token }}
           body: |
             @${{ github.actor }}
+        run: echo '${{ toJSON(steps.changed-files-specific.outputs) }}'
