@@ -6,7 +6,7 @@ on:
     types: [opened, reopened, synchronize]
 
 jobs:
-  update_release_draft:
+  xxx:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
