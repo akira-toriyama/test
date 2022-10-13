@@ -13,6 +13,6 @@ jobs:
       - uses: actions-ecosystem/action-create-comment@v1
         # if: ${{ startsWith(github.event.comment.body, '/hello') }}
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           body: |
             Hello, @${{ github.actor }}!
