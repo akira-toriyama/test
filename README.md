@@ -1,3 +1,4 @@
+test
 ```bash
 brew install deno gh terminal-notifier
 git config --local core.hooksPath .githooks
